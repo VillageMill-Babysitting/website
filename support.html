@@ -7,8 +7,37 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <!-- ══════════════════════════════════════════════════════
+       HEADER — identical on every page
+       ══════════════════════════════════════════════════════ -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
 
-<header class="site-header"></header>
+      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
+        <div class="logo-icon" aria-hidden="true">⭐</div>
+        <span>Little <span class="logo-accent">Stars</span> Care</span>
+      </a>
+
+      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
+        <ul class="nav-list" role="list">
+          <li><a href="index.html"       class="nav-link">Home</a></li>
+          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
+          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+          <li><a href="support.html"     class="nav-link">Support</a></li>
+          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
+        </ul>
+      </nav>
+
+      <button class="menu-toggle" id="menu-toggle"
+              aria-expanded="false" aria-controls="main-nav"
+              aria-label="Open navigation menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </header>
 
 <section class="page-hero">
   <div class="container">
