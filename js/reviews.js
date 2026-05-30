@@ -1,105 +1,282 @@
 /**
- * REVIEWS DATA
+ * LITTLE STARS CARE — reviews.js
  * ─────────────────────────────────────────────────────────────────────────────
- * HOW TO ADD A REVIEW:
- *   1. Copy one block below and paste it before the closing "];"
- *   2. Fill in: reviewer, babysitter, rating (1–5), date (YYYY-MM-DD), and text.
- *   3. Increment the "id" to the next number.
- *   4. Set "featured: true" to show it on the Home page.
+ * Reads window.REVIEWS_DATA (defined in data/reviews.js)
  *
- * NOTE: In production you'd connect this to a database or form service
- *       (see the Reviews page source for details and options).
+ * Exposed globals:
+ *   window.renderFeaturedReviews(containerId)  — home page featured cards
+ *   window.initReviewsPage()                   — full reviews page
+ *
+ * NOTE ON PERSISTENCE:
+ *   Reviews submitted via the Add Review form are stored in memory only.
+ *   They will disappear on page refresh. To persist reviews permanently:
+ *   - Option A: Use Firebase Firestore (free tier) — see README.md
+ *   - Option B: Use Supabase (free tier)
+ *   - Option C: Send via Formspree and manually add to data/reviews.js
  * ─────────────────────────────────────────────────────────────────────────────
  */
-window.REVIEWS_DATA = [
-  {
-    id: 1,
-    reviewer: "Jennifer M.",
-    babysitter: "Sarah Johnson",
-    rating: 5,
-    date: "2026-05-20",
-    text: "Sarah is absolutely incredible with our two kids (ages 3 and 6). She arrived on time, came prepared with activities, and had them laughing and painting within minutes. We came home to happy, well-fed children and a spotless living room. We book her every other weekend now — she's part of the family!",
-    featured: true
-  },
-  {
-    id: 2,
-    reviewer: "David & Lisa K.",
-    babysitter: "Michael Torres",
-    rating: 5,
-    date: "2026-05-14",
-    text: "Michael is phenomenal with our 8-year-old son who has a lot of energy. They played football, built LEGO, and even did some reading before bed. Our son asks for 'the cool babysitter' every time we go out now. Reliable, professional, and genuinely great with kids.",
-    featured: true
-  },
-  {
-    id: 3,
-    reviewer: "Priya S.",
-    babysitter: "Olivia Smith",
-    rating: 5,
-    date: "2026-05-08",
-    text: "We were nervous leaving our 4-month-old for the first time, but Olivia put us completely at ease. She sent photo updates, followed our sleep routine perfectly, and our baby was calm and happy all evening. Olivia's infant care experience really shows — we can't recommend her highly enough.",
-    featured: true
-  },
-  {
-    id: 4,
-    reviewer: "Tom R.",
-    babysitter: "Emily Chen",
-    rating: 5,
-    date: "2026-04-30",
-    text: "Emily helped our 9-year-old with her science project while watching our toddler at the same time. I don't know how she managed both so effortlessly! She is patient, kind, and clearly loves working with children. We've already booked her twice more.",
-    featured: false
-  },
-  {
-    id: 5,
-    reviewer: "Amanda & Chris P.",
-    babysitter: "Sarah Johnson",
-    rating: 5,
-    date: "2026-04-22",
-    text: "We've used Little Stars Care three times now and Sarah has been amazing every single time. She brings her own craft supplies, the kids go to bed on time without a fuss, and she always leaves a little note about what they got up to. It's genuinely hard to find someone this dedicated.",
-    featured: false
-  },
-  {
-    id: 6,
-    reviewer: "Maya T.",
-    babysitter: "Michael Torres",
-    rating: 5,
-    date: "2026-04-15",
-    text: "Michael babysat for our three boys aged 5, 8, and 11 — a notoriously tricky age range to manage all at once. He kept them all engaged, handled a minor argument brilliantly, and had them all in bed by 8:30. He texted us a quick update halfway through the evening. Absolutely perfect.",
-    featured: false
-  },
-  {
-    id: 7,
-    reviewer: "Rachel F.",
-    babysitter: "Olivia Smith",
-    rating: 5,
-    date: "2026-03-29",
-    text: "Our 18-month-old is very clingy and usually cries when we leave. With Olivia, there was barely a whimper. She has a natural warmth that babies just respond to. She also communicated in Spanish with our little one since that's what we use at home — a massive bonus we didn't expect.",
-    featured: false
-  },
-  {
-    id: 8,
-    reviewer: "James & Sophie N.",
-    babysitter: "Emily Chen",
-    rating: 4,
-    date: "2026-03-18",
-    text: "Emily is great — warm, responsible, and creative. Our kids had a blast making obstacle courses in the garden. Only giving 4 stars because she arrived about 10 minutes late, but she let us know in advance and apologised. We've booked her again and she was perfectly on time. Would definitely recommend.",
-    featured: false
-  },
-  {
-    id: 9,
-    reviewer: "Claire O.",
-    babysitter: "Sarah Johnson",
-    rating: 5,
-    date: "2026-03-05",
-    text: "I can't say enough good things about Sarah. She is the only person I trust with my daughter, who has sensory sensitivities. Sarah did her research before the first session, adjusted her approach beautifully, and my daughter now lights up when she arrives. A truly exceptional babysitter.",
-    featured: false
-  },
-  {
-    id: 10,
-    reviewer: "Ben & Hana W.",
-    babysitter: "Michael Torres",
-    rating: 5,
-    date: "2026-02-20",
-    text: "Our kids (7 and 14) are hard to please — the teenager especially. Michael had a proper conversation with our 14-year-old about football and gaming, and even got him to help put his little sister to bed. That has literally never happened before. We were genuinely impressed.",
-    featured: false
+'use strict';
+
+/* ── Helpers ───────────────────────────────────────────────────────────────── */
+
+function _esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function _initials(name) {
+  return name.split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function _fmtDate(dateStr) {
+  return new Date(dateStr + 'T00:00:00')
+    .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function _starsHtml(rating) {
+  let html = `<span class="sr-only">${rating} out of 5 stars</span>`;
+  for (let i = 1; i <= 5; i++) {
+    html += `<span class="${i <= rating ? 'star-filled' : 'star-empty'}" aria-hidden="true">${i <= rating ? '★' : '☆'}</span>`;
   }
-];
+  return html;
+}
+
+const AVATAR_BG = ['#3A7BD5','#2D6FCA','#1E5BAA','#3DAF78','#E86830','#F0B429','#1A4A8A'];
+
+function _avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  return AVATAR_BG[Math.abs(h) % AVATAR_BG.length];
+}
+
+function _animateCards(container) {
+  if (!window.IntersectionObserver) {
+    container.querySelectorAll('.animate-in').forEach(el => el.classList.add('visible'));
+    return;
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  container.querySelectorAll('.animate-in').forEach(el => obs.observe(el));
+}
+
+/* ── Card renderer ─────────────────────────────────────────────────────────── */
+
+function _reviewCard(r) {
+  const color = _avatarColor(r.reviewer);
+  return `
+    <article class="review-card animate-in" aria-label="Review by ${_esc(r.reviewer)}">
+      <div class="review-stars" aria-label="${r.rating} out of 5 stars">
+        ${_starsHtml(r.rating)}
+      </div>
+      <p class="review-text">&ldquo;${_esc(r.text)}&rdquo;</p>
+      <footer class="review-footer">
+        <div class="review-avatar"
+             style="background:${color}"
+             aria-hidden="true"
+             title="${_esc(r.reviewer)}">${_initials(r.reviewer)}</div>
+        <div>
+          <p class="review-meta-name" style="margin:0">${_esc(r.reviewer)}</p>
+          <p class="review-meta-sitter" style="margin:0">reviewed ${_esc(r.babysitter)}</p>
+        </div>
+        <time class="review-date" datetime="${r.date}">${_fmtDate(r.date)}</time>
+      </footer>
+    </article>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PUBLIC: Featured reviews for the home page
+   ═══════════════════════════════════════════════════════════════════════════ */
+function renderFeaturedReviews(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const data     = window.REVIEWS_DATA || [];
+  const featured = data.filter(r => r.featured).slice(0, 3);
+
+  if (!featured.length) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <span class="empty-icon" aria-hidden="true">💬</span>
+        <h3>Reviews Coming Soon</h3>
+        <p>Be the first to share your experience!</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = featured.map(_reviewCard).join('');
+  _animateCards(container);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PUBLIC: Full reviews page — search, filter, sort, add review
+   ═══════════════════════════════════════════════════════════════════════════ */
+function initReviewsPage() {
+  const grid         = document.getElementById('reviews-grid');
+  const searchInput  = document.getElementById('review-search');
+  const sitterFilter = document.getElementById('review-sitter-filter');
+  const sortSelect   = document.getElementById('review-sort');
+  const countEl      = document.getElementById('review-count');
+
+  if (!grid) return;
+
+  // Mutable working copy — new submissions are prepended here
+  let live = [...(window.REVIEWS_DATA || [])];
+
+  // Pre-filter if URL has ?sitter=Name (coming from a babysitter profile)
+  const urlParams  = new URLSearchParams(window.location.search);
+  const urlSitter  = urlParams.get('sitter') || '';
+
+  // Populate sitter filter <select>
+  if (sitterFilter && window.BABYSITTERS_DATA) {
+    window.BABYSITTERS_DATA.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name;
+      sitterFilter.appendChild(opt);
+    });
+    if (urlSitter) sitterFilter.value = urlSitter;
+  }
+
+  /* ── Render grid ───────────────────────────────────────────────────────── */
+  function _render(list) {
+    if (!list.length) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <span class="empty-icon" aria-hidden="true">🔍</span>
+          <h3>No reviews match your search</h3>
+          <p>Try adjusting the filters, or be the first to leave a review!</p>
+        </div>`;
+    } else {
+      grid.innerHTML = list.map(_reviewCard).join('');
+      _animateCards(grid);
+    }
+    if (countEl) countEl.textContent = list.length + ' review' + (list.length !== 1 ? 's' : '');
+  }
+
+  /* ── Filter + sort ─────────────────────────────────────────────────────── */
+  function _update() {
+    const q  = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    const sf = sitterFilter ? sitterFilter.value : '';
+    const so = sortSelect   ? sortSelect.value   : 'newest';
+
+    let results = live.filter(r => {
+      const mq = !q
+        || r.reviewer.toLowerCase().includes(q)
+        || r.babysitter.toLowerCase().includes(q)
+        || r.text.toLowerCase().includes(q);
+      const ms = !sf || r.babysitter === sf;
+      return mq && ms;
+    });
+
+    if      (so === 'highest') results.sort((a,b) => b.rating - a.rating || new Date(b.date) - new Date(a.date));
+    else if (so === 'lowest')  results.sort((a,b) => a.rating - b.rating || new Date(b.date) - new Date(a.date));
+    else                       results.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    _render(results);
+  }
+
+  // Initial render
+  _update();
+
+  if (searchInput)  searchInput.addEventListener('input',  _update);
+  if (sitterFilter) sitterFilter.addEventListener('change', _update);
+  if (sortSelect)   sortSelect.addEventListener('change',   _update);
+
+  /* ── Add Review form ───────────────────────────────────────────────────── */
+  const addForm     = document.getElementById('add-review-form');
+  const addSuccess  = document.getElementById('add-review-success');
+  const addError    = document.getElementById('add-review-error');
+
+  if (!addForm) return;
+
+  // Populate babysitter select in the add-review form
+  const sitterSel = addForm.querySelector('#ar-babysitter');
+  if (sitterSel && window.BABYSITTERS_DATA) {
+    window.BABYSITTERS_DATA.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name;
+      sitterSel.appendChild(opt);
+    });
+  }
+
+  // Clear error highlight on input
+  addForm.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
+    el.addEventListener('input', () => {
+      const g = el.closest('.form-group');
+      if (g) g.classList.remove('has-error');
+      if (addError) addError.classList.remove('visible');
+    });
+  });
+
+  addForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nameVal   = (addForm.querySelector('#ar-name').value   || '').trim();
+    const sitterVal = (sitterSel                                 ? sitterSel.value : '');
+    const textVal   = (addForm.querySelector('#ar-text').value   || '').trim();
+
+    // Get selected star rating
+    let ratingVal = 0;
+    addForm.querySelectorAll('input[name="ar-rating"]').forEach(inp => {
+      if (inp.checked) ratingVal = parseInt(inp.value);
+    });
+
+    let valid = true;
+
+    // Validate text fields
+    [
+      { sel: '#ar-name',       val: nameVal },
+      { sel: '#ar-babysitter', val: sitterVal },
+      { sel: '#ar-text',       val: textVal }
+    ].forEach(({ sel, val }) => {
+      const el  = addForm.querySelector(sel);
+      const grp = el ? el.closest('.form-group') : null;
+      if (!val) { if (grp) grp.classList.add('has-error'); valid = false; }
+    });
+
+    // Validate rating
+    const ratingGroup = addForm.querySelector('.star-rating-group');
+    if (!ratingVal) {
+      if (ratingGroup) ratingGroup.classList.add('has-error');
+      valid = false;
+    } else {
+      if (ratingGroup) ratingGroup.classList.remove('has-error');
+    }
+
+    if (!valid) {
+      if (addError) { addError.textContent = 'Please fill in all fields and choose a star rating.'; addError.classList.add('visible'); }
+      return;
+    }
+
+    if (addError) addError.classList.remove('visible');
+
+    // Build new review
+    const newReview = {
+      id        : live.length + 1000,
+      reviewer  : nameVal,
+      babysitter: sitterVal,
+      rating    : ratingVal,
+      date      : new Date().toISOString().split('T')[0],
+      text      : textVal,
+      featured  : false
+    };
+
+    live.unshift(newReview);
+    _update();
+
+    // Show success
+    if (addSuccess) addSuccess.classList.add('visible');
+    addForm.reset();
+
+    setTimeout(() => {
+      grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+  });
+}
+
+/* ── Expose ────────────────────────────────────────────────────────────────── */
+window.renderFeaturedReviews = renderFeaturedReviews;
+window.initReviewsPage       = initReviewsPage;
