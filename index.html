@@ -3,76 +3,449 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Little Stars Care</title>
-
+  <meta name="description" content="Little Stars Care — Find trusted, certified babysitters in your area. Easy online booking, vetted sitters, and real parent reviews.">
+  <meta name="theme-color" content="#3A7BD5">
+  <!-- Open Graph -->
+  <meta property="og:title"       content="Around the Pool — Trusted Babysitting Services">
+  <meta property="og:description" content="Certified, background-checked babysitters. Easy booking, real reviews, peace of mind.">
+  <meta property="og:type"        content="website">
+  <title>Little Stars Care — Trusted Babysitting Services</title>
+  <!-- Favicon (inline SVG — no separate file needed) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Override arrow pseudo-elements on the 4-col "why us" grid only -->
+  <style>
+    .why-grid .step-card::after { display: none !important; }
+  </style>
 </head>
-
 <body>
 
-<header class="site-header">
-  <div class="container header-inner">
+  <!-- ══════════════════════════════════════════════════════
+       HEADER — identical on every page
+       ══════════════════════════════════════════════════════ -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
 
-    <a href="index.html" class="logo">
-      <span class="logo-icon">⭐</span>
-      Little Stars Care
-    </a>
+      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
+        <div class="logo-icon" aria-hidden="true">⭐</div>
+        <span>Little <span class="logo-accent">Stars</span> Care</span>
+      </a>
 
-    <button
-      id="menu-toggle"
-      class="menu-toggle"
-      aria-expanded="false"
-      aria-label="Menu">
+      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
+        <ul class="nav-list" role="list">
+          <li><a href="index.html"       class="nav-link">Home</a></li>
+          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
+          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+          <li><a href="support.html"     class="nav-link">Support</a></li>
+          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
+        </ul>
+      </nav>
 
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </button>
+      <button class="menu-toggle" id="menu-toggle"
+              aria-expanded="false" aria-controls="main-nav"
+              aria-label="Open navigation menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </header>
 
-    <nav id="main-nav" class="main-nav">
-      <ul class="nav-list">
-        <li><a class="nav-link" href="index.html">Home</a></li>
-        <li><a class="nav-link" href="booking.html">Booking</a></li>
-        <li><a class="nav-link" href="babysitters.html">Babysitters</a></li>
-        <li><a class="nav-link" href="reviews.html">Reviews</a></li>
-        <li><a class="nav-link" href="support.html">Support</a></li>
-      </ul>
-    </nav>
+  <main id="main-content">
 
-  </div>
-</header>
+    <!-- ══════════════════════════════════════════════════════
+         HERO
+         ══════════════════════════════════════════════════════ -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="hero-inner">
 
-<section class="hero">
-  <div class="container">
-    <h1 class="animate-in">
-      Trusted Babysitters for Every Family
-    </h1>
+          <!-- Left: Content -->
+          <div class="hero-content-anim">
+            <div class="hero-badge">
+              <span aria-hidden="true">⭐</span>
+              Trusted by 200+ local families
+            </div>
 
-    <p class="animate-in">
-      Safe, reliable, and caring babysitters available when you need them.
-    </p>
+            <h1 class="hero-title" id="hero-heading">
+              Find a <em>Babysitter</em><br>
+              You Can Trust
+            </h1>
 
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num" data-target="50">0</div>
-        <div class="hero-stat-label">Families Served</div>
+            <p class="hero-subtitle">
+              Little Stars Care connects families with certified, background-checked
+              babysitters. Easy online booking, genuine reviews, and true peace of
+              mind — every single time.
+            </p>
+
+            <div class="hero-actions">
+              <a href="booking.html" class="btn btn-primary btn-lg">
+                📅 Book a Babysitter
+              </a>
+              <a href="babysitters.html" class="btn btn-secondary btn-lg">
+                Meet Our Sitters
+              </a>
+            </div>
+
+            <div class="hero-stats" role="list" aria-label="Service highlights">
+              <div class="hero-stat" role="listitem">
+                <div class="hero-stat-num">200+</div>
+                <div class="hero-stat-label">Happy Families</div>
+              </div>
+              <div class="hero-stat" role="listitem">
+                <div class="hero-stat-num">4.9★</div>
+                <div class="hero-stat-label">Average Rating</div>
+              </div>
+              <div class="hero-stat" role="listitem">
+                <div class="hero-stat-num">15+</div>
+                <div class="hero-stat-label">Vetted Sitters</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Image grid (desktop only — hidden on tablet/mobile via CSS) -->
+          <div class="hero-visual hero-visual-anim" aria-hidden="true">
+            <div class="hero-img-grid">
+              <!-- Replace these with your own babysitter photos -->
+              <div class="hero-img-card">
+                <img src="https://randomuser.me/api/portraits/women/26.jpg"
+                     alt="" loading="eager"
+                     onerror="this.parentElement.style.background='var(--blue-200)'">
+              </div>
+              <div class="hero-img-card">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                     alt="" loading="eager"
+                     onerror="this.parentElement.style.background='var(--blue-300)'">
+              </div>
+              <div class="hero-img-card">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg"
+                     alt="" loading="eager"
+                     onerror="this.parentElement.style.background='var(--blue-200)'">
+              </div>
+              <div class="hero-img-card">
+                <img src="https://randomuser.me/api/portraits/women/65.jpg"
+                     alt="" loading="eager"
+                     onerror="this.parentElement.style.background='var(--blue-300)'">
+              </div>
+            </div>
+            <!-- Floating trust badge -->
+            <div class="hero-float-badge">
+              <span class="hero-float-icon">🛡️</span>
+              <div>
+                <div class="hero-float-label">Background Checked</div>
+                <div class="hero-float-val">100% Vetted</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+    </section>
 
-      <div>
-        <div class="hero-stat-num" data-target="4.9">0</div>
-        <div class="hero-stat-label">Average Rating</div>
+    <!-- ══════════════════════════════════════════════════════
+         STATS BAR
+         ══════════════════════════════════════════════════════ -->
+    <div class="stats-bar" role="region" aria-label="Service statistics">
+      <div class="container">
+        <div class="stats-bar-inner">
+          <div class="stat-item">
+            <div class="stat-num" data-target="200" data-suffix="+">200+</div>
+            <div class="stat-label">Families Served</div>
+          </div>
+          <div class="stat-divider" role="separator" aria-hidden="true"></div>
+          <div class="stat-item">
+            <div class="stat-num" data-target="15" data-suffix="+">15+</div>
+            <div class="stat-label">Verified Sitters</div>
+          </div>
+          <div class="stat-divider" role="separator" aria-hidden="true"></div>
+          <div class="stat-item">
+            <div class="stat-num" data-target="4.9" data-suffix="★">4.9★</div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+          <div class="stat-divider" role="separator" aria-hidden="true"></div>
+          <div class="stat-item">
+            <div class="stat-num" data-target="500" data-suffix="+">500+</div>
+            <div class="stat-label">Bookings Completed</div>
+          </div>
+          <div class="stat-divider" role="separator" aria-hidden="true"></div>
+          <div class="stat-item">
+            <div class="stat-num" data-target="5" data-suffix=" yrs">5 yrs</div>
+            <div class="stat-label">In Business</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<script src="js/main.js"></script>
+    <!-- ══════════════════════════════════════════════════════
+         HOW IT WORKS
+         ══════════════════════════════════════════════════════ -->
+    <section class="section section-alt" aria-labelledby="how-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <div class="section-label" aria-hidden="true">Simple Process</div>
+          <h2 class="section-title" id="how-heading">Book in 3 Easy Steps</h2>
+          <p class="section-subtitle">
+            Getting a trusted babysitter has never been simpler.
+          </p>
+        </header>
+
+        <div class="steps-grid stagger animate-in" role="list">
+          <article class="step-card" role="listitem">
+            <div class="step-num" aria-hidden="true">1</div>
+            <h3 class="step-title">Check Availability</h3>
+            <p class="step-desc">
+              Browse our interactive calendar to find open dates.
+              Green means available — just click to select.
+            </p>
+          </article>
+          <article class="step-card" role="listitem">
+            <div class="step-num" aria-hidden="true">2</div>
+            <h3 class="step-title">Submit a Request</h3>
+            <p class="step-desc">
+              Fill in your details, choose a preferred sitter, and tell us
+              a little about your children. Takes under 2 minutes.
+            </p>
+          </article>
+          <article class="step-card" role="listitem">
+            <div class="step-num" aria-hidden="true">3</div>
+            <h3 class="step-title">Enjoy Your Evening</h3>
+            <p class="step-desc">
+              We'll confirm your booking by email. Your children are in safe,
+              caring hands — go enjoy your time!
+            </p>
+          </article>
+        </div>
+
+        <div class="text-center mt-32">
+          <a href="booking.html" class="btn btn-primary btn-lg">
+            Start Booking →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         FEATURED BABYSITTERS
+         ══════════════════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="sitters-heading">
+      <div class="container">
+        <header class="section-header"
+                style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px">
+          <div>
+            <div class="section-label" aria-hidden="true">Our Team</div>
+            <h2 class="section-title" id="sitters-heading" style="margin-bottom:0">
+              Meet Our Babysitters
+            </h2>
+          </div>
+          <a href="babysitters.html" class="btn btn-secondary">View All Sitters →</a>
+        </header>
+
+        <!-- JS renders cards here; loader is replaced when data loads -->
+        <div class="grid-3" id="featured-sitters" role="list" aria-label="Featured babysitters">
+          <div class="empty-state" style="grid-column:1/-1" aria-live="polite">
+            <span class="empty-icon" aria-hidden="true">⏳</span>
+            <p>Loading babysitters…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         AVAILABILITY CALENDAR
+         ══════════════════════════════════════════════════════ -->
+    <section class="section section-alt calendar-section" aria-labelledby="cal-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <div class="section-label" aria-hidden="true">Availability</div>
+          <h2 class="section-title" id="cal-heading">Check Available Dates</h2>
+          <p class="section-subtitle">
+            Select a green date below to start your booking. Availability is
+            updated by our admin team regularly.
+          </p>
+        </header>
+
+        <div id="home-calendar" class="calendar-container animate-in">
+          <!-- Rendered by js/calendar.js — AvailabilityCalendar -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         FEATURED REVIEWS
+         ══════════════════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="reviews-heading">
+      <div class="container">
+        <header class="section-header"
+                style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px">
+          <div>
+            <div class="section-label" aria-hidden="true">Parent Reviews</div>
+            <h2 class="section-title" id="reviews-heading" style="margin-bottom:0">
+              What Parents Are Saying
+            </h2>
+          </div>
+          <a href="reviews.html" class="btn btn-secondary">All Reviews →</a>
+        </header>
+
+        <div class="grid-3" id="featured-reviews" role="list" aria-label="Featured parent reviews">
+          <div class="empty-state" style="grid-column:1/-1" aria-live="polite">
+            <span class="empty-icon" aria-hidden="true">⏳</span>
+            <p>Loading reviews…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         WHY LITTLE STARS CARE
+         ══════════════════════════════════════════════════════ -->
+    <section class="section section-alt" aria-labelledby="why-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <div class="section-label" aria-hidden="true">Our Promise</div>
+          <h2 class="section-title" id="why-heading">Why Little Stars Care?</h2>
+          <p class="section-subtitle">
+            We go above and beyond to make sure your family is safe, happy, and supported.
+          </p>
+        </header>
+
+        <!-- why-grid class disables the step-card arrow pseudo-elements -->
+        <div class="grid-4 stagger why-grid" role="list">
+          <article class="step-card animate-in" role="listitem">
+            <div style="font-size:38px;margin-bottom:14px" aria-hidden="true">🛡️</div>
+            <h3 class="step-title" style="font-size:1.1rem">Background Checked</h3>
+            <p class="step-desc">Every sitter passes a thorough background check before joining our team.</p>
+          </article>
+          <article class="step-card animate-in" role="listitem">
+            <div style="font-size:38px;margin-bottom:14px" aria-hidden="true">❤️‍🩹</div>
+            <h3 class="step-title" style="font-size:1.1rem">CPR Certified</h3>
+            <p class="step-desc">All our babysitters hold current CPR and First Aid certifications.</p>
+          </article>
+          <article class="step-card animate-in" role="listitem">
+            <div style="font-size:38px;margin-bottom:14px" aria-hidden="true">💬</div>
+            <h3 class="step-title" style="font-size:1.1rem">Real Reviews</h3>
+            <p class="step-desc">Read genuine reviews from verified parents before you choose your sitter.</p>
+          </article>
+          <article class="step-card animate-in" role="listitem">
+            <div style="font-size:38px;margin-bottom:14px" aria-hidden="true">📞</div>
+            <h3 class="step-title" style="font-size:1.1rem">Always Reachable</h3>
+            <p class="step-desc">Our support team is on hand to help with questions or last-minute changes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         CTA BANNER
+         ══════════════════════════════════════════════════════ -->
+    <section class="cta-banner" aria-labelledby="cta-heading">
+      <div class="container" style="position:relative;z-index:1">
+        <h2 id="cta-heading">Ready to Book a Babysitter?</h2>
+        <p>Join 200+ families who trust Little Stars Care. It takes less than 2 minutes.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <a href="booking.html"     class="btn btn-primary btn-lg">📅 Book Now</a>
+          <a href="babysitters.html" class="btn btn-outline  btn-lg">Meet the Team</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER — identical on every page
+       ══════════════════════════════════════════════════════ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span aria-hidden="true">⭐</span> Little Stars Care
+          </div>
+          <p class="footer-brand-desc">
+            Connecting families with certified, caring babysitters since 2021.
+            Your peace of mind is our mission.
+          </p>
+          <nav class="footer-social" aria-label="Social media links">
+            <a href="#" class="social-link" aria-label="Follow us on Facebook">📘</a>
+            <a href="#" class="social-link" aria-label="Follow us on Instagram">📷</a>
+            <a href="#" class="social-link" aria-label="Follow us on Twitter / X">🐦</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="booking.html">Book a Sitter</a></li>
+            <li><a href="babysitters.html">Our Babysitters</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+            <li><a href="support.html">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul class="footer-links">
+            <li><a href="booking.html">Regular Babysitting</a></li>
+            <li><a href="booking.html">Date Night Care</a></li>
+            <li><a href="booking.html">Overnight Sitting</a></li>
+            <li><a href="booking.html">Infant Care</a></li>
+            <li><a href="booking.html">Special Needs Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <!-- TODO: Replace with your real contact details -->
+          <div class="footer-contact-item">
+            <span class="footer-contact-item-icon" aria-hidden="true">📍</span>
+            <span>Your City, State 00000</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="footer-contact-item-icon" aria-hidden="true">📧</span>
+            <a href="mailto:hello@littlestarscare.com">hello@littlestarscare.com</a>
+          </div>
+          <div class="footer-contact-item">
+            <span class="footer-contact-item-icon" aria-hidden="true">📞</span>
+            <a href="tel:+15550000000">(555) 000-0000</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Little Stars Care. All rights reserved. Made with ❤️ for families.</p>
+        <nav class="footer-bottom-links" aria-label="Legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════
+       SCRIPTS — data files first, then JS modules
+       ═══════════════════════════════════════════ -->
+  <script src="data/availability.js"></script>
+  <script src="data/babysitters.js"></script>
+  <script src="data/reviews.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/babysitters.js"></script>
+  <script src="js/reviews.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Home-page calendar — click any green date → request form
+      new AvailabilityCalendar('#home-calendar', {
+        requestPage: 'request.html',
+        showBanner:  true
+      });
+      // Featured babysitter compact cards (featured:true in babysitters.js)
+      renderFeaturedBabysitters('featured-sitters');
+      // Featured review cards (featured:true in reviews.js)
+      renderFeaturedReviews('featured-reviews');
+    });
+  </script>
 
 </body>
 </html>
