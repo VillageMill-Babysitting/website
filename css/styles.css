@@ -30,11 +30,6 @@
 /* ───────────────────────────────────────────────────────
    1. DESIGN TOKENS
    ─────────────────────────────────────────────────────── */
-Here is a refreshed CSS palette that shifts your theme away from the blues and corals, centering it around a crisp, professional green and white/slate aesthetic.
-
-I built out a full 50–900 scale for the green to serve as your primary brand color, and converted the coral accent into a clean, modern off-white/light gray scale that plays perfectly with white backgrounds. I also kept your utility status colors (red and yellow) intact at the bottom.
-
-CSS
 :root {
   /* Palette */
   --blue-900: #0D2E5C;
@@ -60,11 +55,6 @@ CSS
   --red-100:   #FDE8E8;
   --yellow-500:#F0B429;
   --yellow-100:#FFF7E0;
-  /* Utility Status Colors (Preserved & Adjusted) */
-  --red-500:    #E05252;
-  --red-100:    #FDE8E8;
-  --yellow-500: #F0B429;
-  --yellow-100: #FFF7E0;
 
   /* Semantic aliases */
   --primary:        var(--blue-500);
