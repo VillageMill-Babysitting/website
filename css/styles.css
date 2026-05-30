@@ -30,31 +30,41 @@
 /* ───────────────────────────────────────────────────────
    1. DESIGN TOKENS
    ─────────────────────────────────────────────────────── */
+Here is a refreshed CSS palette that shifts your theme away from the blues and corals, centering it around a crisp, professional green and white/slate aesthetic.
+
+I built out a full 50–900 scale for the green to serve as your primary brand color, and converted the coral accent into a clean, modern off-white/light gray scale that plays perfectly with white backgrounds. I also kept your utility status colors (red and yellow) intact at the bottom.
+
+CSS
 :root {
-  /* Palette */
-  --blue-900: #0D2E5C;
-  --blue-800: #1A4A8A;
-  --blue-700: #1E5BAA;
-  --blue-600: #2D6FCA;
-  --blue-500: #3A7BD5;
-  --blue-400: #5E95DF;
-  --blue-300: #8DB8EE;
-  --blue-200: #C0D9F5;
-  --blue-100: #E3EFF9;
-  --blue-50:  #F0F7FF;
+  /* Primary Palette: Forest & Emerald Greens */
+  --green-900: #0B2F1D;
+  --green-800: #144D32;
+  --green-700: #1B6543;
+  --green-600: #247F55;
+  --green-500: #2E9B66; /* Your main brand green */
+  --green-400: #54B887;
+  --green-300: #83D3AA;
+  --green-200: #B7ECCE;
+  --green-100: #E1F7EC;
+  --green-50:  #F0FAF5;
 
-  --coral-600: #C85A2A;
-  --coral-500: #E86830;
-  --coral-400: #FF8A50;
-  --coral-300: #FFB08A;
-  --coral-100: #FFF0E8;
+  /* Accent & Neutral Palette: Crisp Whites, Alabaster, & Light Slates */
+  --white-900: #1E2220; /* Dark slate for high-contrast text on white */
+  --white-800: #333936;
+  --white-700: #5C6460;
+  --white-600: #868E8A;
+  --white-500: #ADBAC4; 
+  --white-400: #D2DBD6;
+  --white-300: #E6EBE8; /* Soft border / divider gray */
+  --white-200: #F1F4F2; /* Light gray background */
+  --white-100: #F8F9F8; /* Off-white / Alabaster */
+  --white-50:  #FFFFFF; /* Pure White */
 
-  --green-500: #3DAF78;
-  --green-100: #E5F7EE;
-  --red-500:   #E05252;
-  --red-100:   #FDE8E8;
-  --yellow-500:#F0B429;
-  --yellow-100:#FFF7E0;
+  /* Utility Status Colors (Preserved & Adjusted) */
+  --red-500:    #E05252;
+  --red-100:    #FDE8E8;
+  --yellow-500: #F0B429;
+  --yellow-100: #FFF7E0;
 
   /* Semantic aliases */
   --primary:        var(--blue-500);
