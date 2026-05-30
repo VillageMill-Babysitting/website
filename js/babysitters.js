@@ -1,81 +1,210 @@
 /**
- * BABYSITTERS DATA
+ * LITTLE STARS CARE — babysitters.js
  * ─────────────────────────────────────────────────────────────────────────────
- * HOW TO ADD A BABYSITTER:
- *   1. Copy one of the blocks below and paste it after the last closing "},"
- *   2. Fill in the details: name, age, experience, photo URL, bio, etc.
- *   3. Increment the "id" field to the next number.
- *   4. Set "featured: true" to show them on the Home page.
+ * Reads window.BABYSITTERS_DATA (defined in data/babysitters.js)
  *
- * PHOTO TIPS:
- *   - Use a square photo at least 300×300 pixels.
- *   - Upload photos to your GitHub repo (e.g., assets/photos/name.jpg).
- *   - Replace the photo URL with your relative path: "assets/photos/sarah.jpg"
+ * Exposed globals:
+ *   window.renderFeaturedBabysitters(containerId)   — home page compact cards
+ *   window.initBabysittersPage()                    — full babysitters page
  * ─────────────────────────────────────────────────────────────────────────────
  */
-window.BABYSITTERS_DATA = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    age: 25,
-    experience: 5,
-    photo: "https://randomuser.me/api/portraits/women/26.jpg",
-    photoAlt: "Sarah Johnson, babysitter",
-    shortBio: "Warm, patient, and endlessly creative — kids absolutely love Sarah.",
-    bio: "Sarah is a certified early childhood educator with 5 years of professional babysitting experience. She specializes in working with children aged 1–10 and has a wonderful talent for making even the shyest kids feel right at home. When she's not babysitting, Sarah loves arts and crafts — something she always brings to her sessions to keep little ones engaged and smiling.",
-    certifications: ["CPR Certified", "First Aid", "Early Childhood Education"],
-    specialties: ["Arts & Crafts", "Newborns", "Special Needs Support"],
-    rating: 4.9,
-    reviewCount: 47,
-    availability: "Weekdays & Weekends",
-    featured: true
-  },
-  {
-    id: 2,
-    name: "Emily Chen",
-    age: 22,
-    experience: 3,
-    photo: "https://randomuser.me/api/portraits/women/44.jpg",
-    photoAlt: "Emily Chen, babysitter",
-    shortBio: "Energetic, nurturing, and always full of ideas for outdoor adventures.",
-    bio: "Emily is studying Child Development at university and brings both academic knowledge and genuine warmth to every session. With 3 years of babysitting experience across 6 families, she's great at homework help, STEM activities, and outdoor play. Parents love how engaged their kids stay under Emily's care.",
-    certifications: ["CPR Certified", "First Aid", "Child Development Student"],
-    specialties: ["Outdoor Play", "Homework Help", "STEM Activities"],
-    rating: 4.8,
-    reviewCount: 29,
-    availability: "Evenings & Weekends",
-    featured: true
-  },
-  {
-    id: 3,
-    name: "Michael Torres",
-    age: 28,
-    experience: 7,
-    photo: "https://randomuser.me/api/portraits/men/32.jpg",
-    photoAlt: "Michael Torres, babysitter",
-    shortBio: "Calm, confident, and brilliant with high-energy kids of all ages.",
-    bio: "Michael is our most experienced sitter with 7 years in childcare — from summer camps to daycare centres to private families. He has a background in physical education, loves sports and games, and excels at keeping multiple children occupied. He's also trained in behaviour management, making him an exceptional fit for more energetic households.",
-    certifications: ["CPR Certified", "First Aid", "Behaviour Management", "Camp Counsellor Certified"],
-    specialties: ["High-Energy Kids", "Sports & Games", "Multiple Children", "Teenagers"],
-    rating: 4.9,
-    reviewCount: 61,
-    availability: "Flexible Schedule",
-    featured: true
-  },
-  {
-    id: 4,
-    name: "Olivia Smith",
-    age: 24,
-    experience: 4,
-    photo: "https://randomuser.me/api/portraits/women/65.jpg",
-    photoAlt: "Olivia Smith, babysitter",
-    shortBio: "Gentle, dependable, and especially wonderful with infants and toddlers.",
-    bio: "Olivia has a natural gift with very young children. Her 4 years of babysitting experience is complemented by part-time work at a paediatric clinic, giving her unique insight into developmental milestones. Parents consistently say their babies calm down the moment Olivia arrives. She is also fully bilingual in Spanish and English.",
-    certifications: ["CPR Certified", "First Aid", "Infant Care Specialist", "Bilingual (Spanish)"],
-    specialties: ["Infants", "Toddlers", "Bilingual Care", "Sleep Routines"],
-    rating: 4.9,
-    reviewCount: 38,
-    availability: "Daytime & Weekends",
-    featured: false
+'use strict';
+
+/* ── Scroll animation observer ─────────────────────────────────────────────── */
+function _animateCards(container) {
+  if (!window.IntersectionObserver) {
+    container.querySelectorAll('.animate-in').forEach(el => el.classList.add('visible'));
+    return;
   }
-];
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  container.querySelectorAll('.animate-in').forEach(el => obs.observe(el));
+}
+
+/* ── Compact card (home page) ──────────────────────────────────────────────── */
+function _compactCard(s) {
+  const certHtml = s.certifications.slice(0, 2)
+    .map(c => `<span class="cert-chip">✓ ${_esc(c)}</span>`).join('');
+
+  return `
+    <article class="sitter-card animate-in" aria-label="${_esc(s.name)} babysitter">
+      <div class="sitter-card-img-wrap">
+        <img class="sitter-card-img"
+             src="${_esc(s.photo)}"
+             alt="${_esc(s.photoAlt)}"
+             loading="lazy"
+             onerror="this.src='https://placehold.co/300x300/C0D9F5/1A4A8A?text=${encodeURIComponent(s.name[0])}'">
+        <div class="sitter-badge-wrap">
+          <span class="sitter-badge" aria-label="Rated ${s.rating} out of 5">
+            <span class="star" aria-hidden="true">★</span> ${s.rating}
+          </span>
+        </div>
+      </div>
+      <div class="sitter-card-body">
+        <h3 class="sitter-card-name">${_esc(s.name)}</h3>
+        <div class="sitter-card-meta">
+          <span class="sitter-meta-chip">👩‍👧 ${s.experience} yrs exp</span>
+          <span class="sitter-meta-chip">🕐 ${_esc(s.availability)}</span>
+        </div>
+        <p class="sitter-card-desc">${_esc(s.shortBio)}</p>
+        <div class="sitter-certs" aria-label="Certifications">${certHtml}</div>
+        <a href="babysitters.html#sitter-${s.id}" class="btn btn-secondary btn-sm" style="margin-top:4px">
+          View Profile →
+        </a>
+      </div>
+    </article>`;
+}
+
+/* ── Full profile card (babysitters page) ─────────────────────────────────── */
+function _profileCard(s) {
+  const certHtml = s.certifications
+    .map(c => `<span class="cert-chip">✓ ${_esc(c)}</span>`).join('');
+
+  const specHtml = s.specialties
+    .map(sp => `<span class="specialty-chip">${_esc(sp)}</span>`).join('');
+
+  const firstName = s.name.split(' ')[0];
+
+  return `
+    <article class="sitter-profile-card animate-in" id="sitter-${s.id}"
+             aria-label="${_esc(s.name)} full profile">
+      <div class="sitter-profile-img-col">
+        <img class="sitter-profile-img"
+             src="${_esc(s.photo)}"
+             alt="${_esc(s.photoAlt)}"
+             loading="lazy"
+             onerror="this.src='https://placehold.co/260x320/C0D9F5/1A4A8A?text=${encodeURIComponent(s.name[0])}'">
+        <div class="sitter-profile-overlay">
+          <div class="sitter-profile-rating">
+            <span aria-hidden="true">★</span>
+            <strong>${s.rating}</strong>
+            <span>(${s.reviewCount} reviews)</span>
+          </div>
+        </div>
+      </div>
+      <div class="sitter-profile-body">
+        <h2 class="sitter-profile-name">${_esc(s.name)}</h2>
+        <p class="sitter-profile-tagline">${_esc(s.shortBio)}</p>
+        <div class="sitter-profile-details">
+          ${s.age ? `<span class="sitter-detail-item"><span class="sitter-detail-icon" aria-hidden="true">🎂</span> Age ${s.age}</span>` : ''}
+          <span class="sitter-detail-item">
+            <span class="sitter-detail-icon" aria-hidden="true">⭐</span>
+            ${s.experience} years experience
+          </span>
+          <span class="sitter-detail-item">
+            <span class="sitter-detail-icon" aria-hidden="true">🕐</span>
+            ${_esc(s.availability)}
+          </span>
+        </div>
+        <p class="sitter-profile-bio">${_esc(s.bio)}</p>
+        <div class="sitter-specialties" aria-label="Specialties">${specHtml}</div>
+        <div class="sitter-certs" aria-label="Certifications" style="margin-top:12px">${certHtml}</div>
+        <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+          <a href="request.html?sitter=${encodeURIComponent(s.name)}"
+             class="btn btn-primary btn-sm">Book ${_esc(firstName)}</a>
+          <a href="reviews.html?sitter=${encodeURIComponent(s.name)}"
+             class="btn btn-secondary btn-sm">Read Reviews</a>
+        </div>
+      </div>
+    </article>`;
+}
+
+/* ── Helper: HTML-escape ───────────────────────────────────────────────────── */
+function _esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PUBLIC: Featured cards for the home page
+   ═══════════════════════════════════════════════════════════════════════════ */
+function renderFeaturedBabysitters(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const data     = window.BABYSITTERS_DATA || [];
+  const featured = data.filter(s => s.featured).slice(0, 3);
+
+  if (!featured.length) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <span class="empty-icon" aria-hidden="true">👩‍👧</span>
+        <h3>Babysitters Coming Soon</h3>
+        <p>Check back shortly to meet our team.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = featured.map(_compactCard).join('');
+  _animateCards(container);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PUBLIC: Full babysitters page with search / filter
+   ═══════════════════════════════════════════════════════════════════════════ */
+function initBabysittersPage() {
+  const grid   = document.getElementById('babysitters-grid');
+  const search = document.getElementById('sitter-search');
+  const avlFil = document.getElementById('sitter-availability');
+  const countEl= document.getElementById('sitter-count');
+
+  if (!grid) return;
+
+  const data = window.BABYSITTERS_DATA || [];
+
+  function _render(list) {
+    if (!list.length) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <span class="empty-icon" aria-hidden="true">🔍</span>
+          <h3>No sitters match your search</h3>
+          <p>Try a different name, specialty, or availability option.</p>
+        </div>`;
+    } else {
+      grid.innerHTML = list.map(_profileCard).join('');
+      _animateCards(grid);
+    }
+    if (countEl) {
+      countEl.textContent = list.length + ' sitter' + (list.length !== 1 ? 's' : '');
+    }
+  }
+
+  function _filter() {
+    const q  = (search ? search.value : '').toLowerCase().trim();
+    const av = avlFil ? avlFil.value.toLowerCase() : '';
+
+    _render(data.filter(s => {
+      const matchQ = !q
+        || s.name.toLowerCase().includes(q)
+        || s.shortBio.toLowerCase().includes(q)
+        || s.bio.toLowerCase().includes(q)
+        || s.specialties.some(sp => sp.toLowerCase().includes(q))
+        || s.certifications.some(c => c.toLowerCase().includes(q));
+      const matchA = !av || s.availability.toLowerCase().includes(av);
+      return matchQ && matchA;
+    }));
+  }
+
+  // Initial render
+  _render(data);
+
+  // Scroll to anchor if URL has #sitter-N
+  if (window.location.hash) {
+    setTimeout(() => {
+      const t = document.querySelector(window.location.hash);
+      if (t) {
+        const top = t.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }, 350);
+  }
+
+  if (search) search.addEventListener('input', _filter);
+  if (avlFil) avlFil.addEventListener('change', _filter);
+}
+
+/* ── Expose ────────────────────────────────────────────────────────────────── */
+window.renderFeaturedBabysitters = renderFeaturedBabysitters;
+window.initBabysittersPage       = initBabysittersPage;
