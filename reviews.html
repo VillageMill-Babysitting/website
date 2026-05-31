@@ -1,98 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Reviews | Little Stars Care</title>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Reviews — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      <span>Village Mill <span class="logo-accent">Babysitting</span></span>
+    </a>
+    <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        <li><a href="index.html"       class="nav-link">Home</a></li>
+        <li><a href="booking.html"     class="nav-link">Booking</a></li>
+        <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+        <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+        <li><a href="support.html"     class="nav-link">Support</a></li>
+        <li><a href="login.html"       class="nav-link" id="nav-auth-link">Sign In</a></li>
+        <li><a href="booking.html"     class="nav-link nav-cta">Book Now</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle menu">
+      <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+    </button>
+  </div>
+</header>
 
-  <!-- ══════════════════════════════════════════════════════
-       HEADER — identical on every page
-       ══════════════════════════════════════════════════════ -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-
-      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
-        <div class="logo-icon" aria-hidden="true">⭐</div>
-        <span>Little <span class="logo-accent">Stars</span> Care</span>
-      </a>
-
-      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
-        <ul class="nav-list" role="list">
-          <li><a href="index.html"       class="nav-link">Home</a></li>
-          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
-          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
-          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
-          <li><a href="support.html"     class="nav-link">Support</a></li>
-          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
-        </ul>
-      </nav>
-
-      <button class="menu-toggle" id="menu-toggle"
-              aria-expanded="false" aria-controls="main-nav"
-              aria-label="Open navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </header>
-
-<section class="page-hero">
+<div class="page-hero">
   <div class="container">
-    <h1>Family Reviews</h1>
-    <p>What our families say about us.</p>
+    <nav class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">/</span><span>Reviews</span></nav>
+    <h1>Parent Reviews</h1>
+    <p>Honest feedback from real families in our community.</p>
   </div>
-</section>
+</div>
 
-<section class="section">
-  <div class="container grid-3">
+<main class="section">
+  <div class="container">
 
-    <div class="review-card animate-in">
-      <div class="review-stars">
-        ★★★★★
+    <!-- FILTER BAR -->
+    <div class="filter-bar" style="margin-bottom:28px">
+      <div class="filter-search">
+        <span class="filter-search-icon" aria-hidden="true">&#128269;</span>
+        <input type="search" id="review-search" placeholder="Search reviews…" aria-label="Search reviews">
+      </div>
+      <select class="filter-select" id="review-sitter-filter" aria-label="Filter by sitter">
+        <option value="">All Babysitters</option>
+      </select>
+      <select class="filter-select" id="review-sort" aria-label="Sort reviews">
+        <option value="newest">Newest First</option>
+        <option value="highest">Highest Rated</option>
+        <option value="lowest">Lowest Rated</option>
+      </select>
+      <span id="review-count" style="font-size:.84rem;color:var(--text-light);font-weight:500;white-space:nowrap" aria-live="polite"></span>
+    </div>
+
+    <!-- REVIEWS GRID -->
+    <div class="grid-3" id="reviews-grid" aria-live="polite">
+      <div class="empty-state" style="grid-column:1/-1"><span class="empty-icon">&#9679;</span><p>Loading reviews…</p></div>
+    </div>
+
+    <!-- ADD REVIEW FORM -->
+    <div style="margin-top:56px;max-width:620px;margin-left:auto;margin-right:auto" id="add-review">
+      <header class="section-header centered">
+        <div class="section-label">Share Your Experience</div>
+        <h2>Leave a Review</h2>
+        <p class="section-subtitle">Your honest feedback helps other families in the community.</p>
+      </header>
+
+      <div class="config-box">
+        <div class="config-box-title">&#9432; How reviews work</div>
+        <p>Reviews submitted here are stored in memory for this session. To persist them, connect Firebase Firestore — the <code>submitReview()</code> function in <code>js/firebase-app.js</code> is ready to use. If a user is logged in, their name is pre-filled.</p>
       </div>
 
-      <p class="review-text">
-        Emma was wonderful with our children.
-      </p>
-
-      <div class="review-footer">
-        <div class="review-avatar">J</div>
-
-        <div>
-          <div class="review-meta-name">
-            Jessica M.
+      <div class="form-card">
+        <form id="add-review-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="ar-name">Your Name <span class="required">*</span></label>
+              <input class="form-input" id="ar-name" type="text" placeholder="Jane Smith" required>
+              <span class="field-error">Please enter your name.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ar-babysitter">Babysitter Reviewed <span class="required">*</span></label>
+              <select class="form-select" id="ar-babysitter" required>
+                <option value="">Choose a sitter…</option>
+              </select>
+              <span class="field-error">Please select a babysitter.</span>
+            </div>
           </div>
-        </div>
+          <div class="form-group star-rating-group">
+            <label class="form-label">Your Rating <span class="required">*</span></label>
+            <div class="star-rating-widget" role="radiogroup" aria-label="Star rating">
+              <input type="radio" name="ar-rating" id="r5" value="5"><label for="r5" aria-label="5 stars">&#9733;</label>
+              <input type="radio" name="ar-rating" id="r4" value="4"><label for="r4" aria-label="4 stars">&#9733;</label>
+              <input type="radio" name="ar-rating" id="r3" value="3"><label for="r3" aria-label="3 stars">&#9733;</label>
+              <input type="radio" name="ar-rating" id="r2" value="2"><label for="r2" aria-label="2 stars">&#9733;</label>
+              <input type="radio" name="ar-rating" id="r1" value="1"><label for="r1" aria-label="1 star">&#9733;</label>
+            </div>
+            <span class="field-error">Please select a rating.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ar-text">Your Review <span class="required">*</span></label>
+            <textarea class="form-textarea" id="ar-text" placeholder="Tell other parents about your experience…" rows="5" required></textarea>
+            <span class="field-error">Please write a review (at least 10 characters).</span>
+          </div>
+          <div id="add-review-success" class="form-success" role="alert"><span>&#10003;</span><div><strong>Review submitted!</strong> Thank you — it's now visible in the list above.</div></div>
+          <div id="add-review-error"   class="form-error-msg" role="alert"></div>
+          <button class="btn btn-primary btn-block" type="submit" style="margin-top:8px">Submit Review</button>
+        </form>
       </div>
     </div>
 
-    <div class="review-card animate-in">
-      <div class="review-stars">
-        ★★★★★
-      </div>
-
-      <p class="review-text">
-        Very professional and dependable.
-      </p>
-
-      <div class="review-footer">
-        <div class="review-avatar">D</div>
-
-        <div>
-          <div class="review-meta-name">
-            David R.
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
-</section>
+</main>
 
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-logo"><div class="footer-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Village Mill Babysitting</div><p class="footer-brand-desc">Trusted babysitters for the Village Mill community.</p></div>
+      <div><h4>Navigation</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="booking.html">Book</a></li><li><a href="babysitters.html">Babysitters</a></li><li><a href="support.html">Support</a></li></ul></div>
+      <div><h4>Account</h4><ul class="footer-links"><li><a href="login.html">Sign In</a></li><li><a href="login.html#register">Register</a></li><li><a href="dashboard.html">My Dashboard</a></li></ul></div>
+      <div><h4>Contact</h4><div class="footer-contact-item"><span>&#128231;</span><a href="mailto:hello@villagemillbabysitting.com">hello@villagemillbabysitting.com</a></div></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Village Mill Babysitting.</p><nav class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></nav></div>
+  </div>
+</footer>
+
+<script src="data/babysitters.js"></script>
+<script src="data/reviews.js"></script>
 <script src="js/main.js"></script>
+<script src="js/reviews.js"></script>
+<script type="module">
+  import { onAuth } from './js/firebase-app.js';
+  onAuth(user => {
+    const l = document.getElementById('nav-auth-link');
+    if (l) { l.textContent = user ? 'My Dashboard' : 'Sign In'; l.href = user ? 'dashboard.html' : 'login.html'; }
+    if (user) {
+      const nameInput = document.getElementById('ar-name');
+      if (nameInput && user.displayName) nameInput.value = user.displayName;
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => initReviewsPage());
+</script>
 </body>
 </html>
