@@ -1,80 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Support | Little Stars Care</title>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- ══════════════════════════════════════════════════════
-       HEADER — identical on every page
-       ══════════════════════════════════════════════════════ -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      <span>Village Mill <span class="logo-accent">Babysitting</span></span>
+    </a>
+    <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        <li><a href="index.html"       class="nav-link">Home</a></li>
+        <li><a href="booking.html"     class="nav-link">Booking</a></li>
+        <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+        <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+        <li><a href="support.html"     class="nav-link">Support</a></li>
+        <li><a href="login.html"       class="nav-link" id="nav-auth-link">Sign In</a></li>
+        <li><a href="booking.html"     class="nav-link nav-cta">Book Now</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle menu">
+      <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+    </button>
+  </div>
+</header>
 
-      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
-        <div class="logo-icon" aria-hidden="true">⭐</div>
-        <span>Little <span class="logo-accent">Stars</span> Care</span>
-      </a>
+<div class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">/</span><span>Support</span></nav>
+    <h1>Support</h1>
+    <p>We're here to help. Reach us by email, phone, or use the contact form below.</p>
+  </div>
+</div>
 
-      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
-        <ul class="nav-list" role="list">
-          <li><a href="index.html"       class="nav-link">Home</a></li>
-          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
-          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
-          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
-          <li><a href="support.html"     class="nav-link">Support</a></li>
-          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
-        </ul>
-      </nav>
+<main>
 
-      <button class="menu-toggle" id="menu-toggle"
-              aria-expanded="false" aria-controls="main-nav"
-              aria-label="Open navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+  <!-- CONTACT OPTIONS -->
+  <section class="section">
+    <div class="container">
+      <header class="section-header centered">
+        <div class="section-label">Get in Touch</div>
+        <h2>How Can We Help?</h2>
+      </header>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <span class="contact-icon">&#128231;</span>
+          <h3>Email Us</h3>
+          <p>Send us a message any time. We reply within 24 hours.</p>
+          <a href="mailto:hello@villagemillbabysitting.com" class="btn btn-primary btn-sm">Send Email</a>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">&#128222;</span>
+          <h3>Call Us</h3>
+          <p>Available Monday–Friday, 9am–6pm local time.</p>
+          <a href="tel:+15550000000" class="btn btn-primary btn-sm">Call Now</a>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">&#128100;</span>
+          <h3>My Account</h3>
+          <p>Log in to view and manage your bookings online.</p>
+          <a href="dashboard.html" class="btn btn-primary btn-sm">My Dashboard</a>
+        </div>
+      </div>
+
+      <!-- CONTACT FORM -->
+      <div style="max-width:620px;margin:0 auto">
+        <h2 style="margin-bottom:6px;font-size:1.3rem">Send Us a Message</h2>
+        <p style="color:var(--text-medium);font-size:.9rem;margin-bottom:22px">Fill in the form below and we'll get back to you promptly.</p>
+        <div class="form-card">
+          <form id="contact-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="con-name">Your Name <span class="required">*</span></label>
+                <input class="form-input" id="con-name" type="text" placeholder="Jane Smith" autocomplete="name" required>
+                <span class="field-error">Please enter your name.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="con-email">Email Address <span class="required">*</span></label>
+                <input class="form-input" id="con-email" type="email" placeholder="jane@example.com" autocomplete="email" required>
+                <span class="field-error">Please enter a valid email.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="con-subject">Subject <span class="required">*</span></label>
+              <input class="form-input" id="con-subject" type="text" placeholder="What's your question about?" required>
+              <span class="field-error">Please enter a subject.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="con-message">Message <span class="required">*</span></label>
+              <textarea class="form-textarea" id="con-message" placeholder="Tell us how we can help…" rows="5" required></textarea>
+              <span class="field-error">Please write a message (at least 10 characters).</span>
+            </div>
+            <div id="contact-success" class="form-success" role="alert"><span>&#10003;</span><div><strong>Message sent!</strong> We'll be in touch within 24 hours.</div></div>
+            <div id="contact-error"   class="form-error-msg" role="alert"></div>
+            <button class="btn btn-primary btn-block" type="submit" style="margin-top:8px">Send Message</button>
+          </form>
+        </div>
+      </div>
     </div>
-  </header>
+  </section>
 
-<section class="page-hero">
+  <!-- FAQ -->
+  <section class="section section-alt" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <header class="section-header centered">
+        <div class="section-label">FAQ</div>
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Quick answers to common questions from Village Mill families.</p>
+      </header>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How do I book a babysitter? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Visit the <a href="booking.html">Booking page</a>, select an available date on the calendar, then fill in your details and submit the form. You'll receive a confirmation email within 24 hours. You can also create an account to track your bookings in the dashboard.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How do I cancel a booking? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Log in to your account and visit <a href="dashboard.html">My Dashboard</a>. You'll see all upcoming bookings with a Cancel button. Please cancel at least 24 hours in advance where possible. Alternatively, email us at <a href="mailto:hello@villagemillbabysitting.com">hello@villagemillbabysitting.com</a>.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How do payments work? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Payment is arranged directly with your babysitter. Our standard rates start at $18/hour. The exact rate depends on the sitter's experience, the number of children, and the length of the session. We do not charge a platform fee.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How are babysitters vetted? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Every sitter goes through an in-person interview, two reference checks, a full background check, and must hold valid CPR and First Aid certifications. We re-verify certifications annually.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Can I request the same sitter each time? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Yes. When filling in a booking request, select your preferred sitter from the dropdown. Subject to their availability, we'll always try to match you with your preferred sitter. Returning families often build a great ongoing relationship with one sitter.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Do you offer overnight babysitting? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Yes. Select "Overnight" from the preferred time dropdown on the booking form. Overnight rates are agreed directly with the sitter. Please include any relevant details (sleep routines, emergency contacts) in the Special Notes field.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What if my child has special needs? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Several of our sitters have experience working with children with special needs. Please describe your child's requirements in the Special Notes field when booking, or email us and we'll match you with the most suitable sitter on our team.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How do I create an account? <span class="faq-icon" aria-hidden="true">+</span></button>
+          <div class="faq-a" role="region"><p>Visit the <a href="login.html">Sign In page</a> and click "Create Account". You can register with your email and a password, or sign in instantly with Google. Once logged in, you can view your booking history and manage upcoming appointments from your dashboard.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
   <div class="container">
-    <h1>Contact Support</h1>
-    <p>We're here to help.</p>
+    <div class="footer-grid">
+      <div><div class="footer-logo"><div class="footer-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Village Mill Babysitting</div><p class="footer-brand-desc">Trusted babysitters for the Village Mill community.</p></div>
+      <div><h4>Navigation</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="booking.html">Book</a></li><li><a href="babysitters.html">Babysitters</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+      <div><h4>Help</h4><ul class="footer-links"><li><a href="support.html#faq">FAQ</a></li><li><a href="support.html">Contact Us</a></li><li><a href="login.html">My Account</a></li></ul></div>
+      <div><h4>Contact</h4><div class="footer-contact-item"><span>&#128231;</span><a href="mailto:hello@villagemillbabysitting.com">hello@villagemillbabysitting.com</a></div><div class="footer-contact-item"><span>&#128222;</span><a href="tel:+15550000000">(555) 000-0000</a></div></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Village Mill Babysitting.</p><nav class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></nav></div>
   </div>
-</section>
-
-<section class="section">
-  <div class="container">
-
-    <form class="form-card">
-
-      <div class="form-group">
-        <label class="form-label">Name</label>
-        <input class="form-input" type="text">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-input" type="email">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Message</label>
-        <textarea class="form-textarea"></textarea>
-      </div>
-
-      <button class="btn btn-primary">
-        Send Message
-      </button>
-
-    </form>
-
-  </div>
-</section>
+</footer>
 
 <script src="js/main.js"></script>
+<script src="js/forms.js"></script>
+<script type="module">
+  import { onAuth } from './js/firebase-app.js';
+  onAuth(user => { const l=document.getElementById('nav-auth-link'); if(l){l.textContent=user?'My Dashboard':'Sign In';l.href=user?'dashboard.html':'login.html';} });
+</script>
+<script>document.addEventListener('DOMContentLoaded', () => initContactForm());</script>
 </body>
 </html>
