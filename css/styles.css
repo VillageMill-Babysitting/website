@@ -299,16 +299,15 @@ p:last-child{margin-bottom:0}
 /* ── 7. HERO VISUAL & GRID FIXED ────────────────────────────────────────── */
 
 /* 1. Make this the relative anchor container for the absolute trust badge */
-.hero-visual {
-  position: relative;
+.hero-visual{
+  position:relative;
 }
 
-/* 2. Target the actual image wrapper for the 2x2 grid */
-.hero-img-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 16px; /* Slightly widened gap for a cleaner staggered look */
+.hero-img-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:12px;
 }
 
 .hero-img-card {
