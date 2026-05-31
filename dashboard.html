@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Dashboard-only overrides */
+    body { background: var(--bg-page); }
+
+    /* Auth gate — shown while checking auth, hidden once confirmed */
+    #auth-gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-page);
+    }
+    #auth-gate.hidden { display: none; }
+    #dashboard-shell  { display: none; }
+    #dashboard-shell.visible { display: block; }
+
+    /* Mobile sidebar toggle */
+    .sidebar-mobile-toggle {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--green-800);
+      color: #fff;
+      font-weight: 600;
+      font-size: .875rem;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+    @media (max-width: 1024px) {
+      .sidebar-mobile-toggle { display: flex; }
+      .sidebar-collapsible   { display: none; }
+      .sidebar-collapsible.open { display: block; }
+    }
+
+    /* Booking card (mobile) */
+    .booking-card {
+      background: #fff;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--r-lg);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-xs);
+    }
+    .booking-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .booking-card-date {
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--text-dark);
+    }
+    .booking-card-meta {
+      font-size: .82rem;
+      color: var(--text-medium);
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .booking-card-meta span { display: flex; align-items: center; gap: 5px; }
+
+    /* Profile form */
+    .profile-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+      padding: 20px;
+      background: var(--primary-xlight);
+      border-radius: var(--r-lg);
+      border: 1.5px solid var(--primary-light);
+    }
+    .profile-avatar-large {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: grid; place-items: center;
+      color: #fff; font-weight: 700;
+      font-size: 1.4rem; flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(54,122,74,.30);
+    }
+    .profile-avatar-info h3 { font-size: 1.1rem; margin-bottom: 3px; }
+    .profile-avatar-info p  { font-size: .82rem; color: var(--text-medium); margin: 0; }
+
+    /* Timeline / activity */
+    .activity-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--primary); flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .activity-dot.cancelled { background: var(--error); }
+    .activity-dot.completed { background: var(--stone-300); }
+    .activity-text { font-size: .875rem; color: var(--text-medium); }
+    .activity-text strong { color: var(--text-dark); }
+    .activity-time { font-size: .75rem; color: var(--text-xlight); margin-top: 2px; }
+
+    /* Loading spinner in dashboard */
+    .db-loading {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 40px;
+      color: var(--text-light); font-size: .9rem;
+    }
+    .db-loading .spinner {
+      border-color: rgba(54,122,74,.25);
+      border-top-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════
+     AUTH GATE  — shown while Firebase checks login state
+     ════════════════════════════════════════════════════ -->
+<div id="auth-gate" role="status" aria-label="Checking sign-in status">
+  <div style="text-align:center">
+    <div class="spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 16px"></div>
+    <p style="color:var(--text-medium);font-size:.9rem">Checking your account…</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     DASHBOARD SHELL  — shown only when logged in
+     ════════════════════════════════════════════════════ -->
+<div id="dashboard-shell">
+
+  <!-- TOP NAV (minimal — full nav lives in sidebar) -->
+  <header class="site-header" role="banner" style="position:sticky;top:0;z-index:200">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <span>Village Mill <span class="logo-accent">Babysitting</span></span>
+      </a>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="nav-user-chip" id="header-user-chip" aria-live="polite">
+          <div class="nav-user-avatar" id="header-avatar">?</div>
+          <span id="header-name">Loading…</span>
+        </div>
+        <a href="index.html" class="btn btn-secondary btn-sm">Back to Site</a>
+        <button class="btn btn-ghost btn-sm" id="signout-btn-top" style="color:var(--error)">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD LAYOUT -->
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="dashboard-sidebar" aria-label="Dashboard navigation">
+
+      <!-- Mobile toggle -->
+      <button class="sidebar-mobile-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="sidebar-collapsible">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        Dashboard Menu
+      </button>
+
+      <div class="sidebar-collapsible" id="sidebar-collapsible">
+
+        <!-- User block -->
+        <div class="sidebar-user" id="sidebar-user-block">
+          <div class="sidebar-user-avatar" id="sidebar-avatar">?</div>
+          <div class="sidebar-user-name"  id="sidebar-name">Loading…</div>
+          <div class="sidebar-user-email" id="sidebar-email"></div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="sidebar-nav" aria-label="Dashboard sections">
+          <button class="sidebar-nav-item active" data-panel="overview" aria-current="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Overview
+          </button>
+          <button class="sidebar-nav-item" data-panel="bookings">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            My Bookings
+          </button>
+          <button class="sidebar-nav-item" data-panel="new-booking">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm1 14H8v-2h5v2zm3-4H8v-2h8v2zm0-4H8V7h8v2z"/></svg>
+            New Booking
+          </button>
+          <button class="sidebar-nav-item" data-panel="reviews">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            My Reviews
+          </button>
+          <div class="sidebar-nav-divider"></div>
+          <button class="sidebar-nav-item" data-panel="profile">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Profile
+          </button>
+          <div class="sidebar-nav-divider"></div>
+          <button class="sidebar-nav-item" id="signout-btn-sidebar" style="color:rgba(255,100,80,.8)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Sign Out
+          </button>
+        </nav>
+
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard-main" id="dashboard-main" aria-live="polite">
+
+      <!-- ── OVERVIEW PANEL ─────────────────────────────────────────── -->
+      <div class="db-panel active" id="panel-overview">
+        <div class="dashboard-header">
+          <h2 id="overview-greeting">Welcome back!</h2>
+          <p>Here's a summary of your account with Village Mill Babysitting.</p>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="db-stats" id="overview-stats">
+          <div class="db-stat-card">
+            <div class="db-stat-label">Total Bookings</div>
+            <div class="db-stat-num" id="stat-total">—</div>
+            <div class="db-stat-sub">all time</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="db-stat-label">Upcoming</div>
+            <div class="db-stat-num" id="stat-upcoming">—</div>
+            <div class="db-stat-sub">confirmed or pending</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="db-stat-label">Completed</div>
+            <div class="db-stat-num" id="stat-completed">—</div>
+            <div class="db-stat-sub">sessions done</div>
+          </div>
+          <div class="db-stat-card">
+            <div class="db-stat-label">Cancelled</div>
+            <div class="db-stat-num" id="stat-cancelled">—</div>
+            <div class="db-stat-sub">this year</div>
+          </div>
+        </div>
+
+        <!-- Next booking callout -->
+        <div id="next-booking-callout" style="display:none;margin-bottom:28px">
+          <div style="background:var(--primary-xlight);border:1.5px solid var(--primary);border-radius:var(--r-lg);padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="font-size:28px" aria-hidden="true">&#128197;</div>
+            <div style="flex:1">
+              <div style="font-size:.75rem;font-weight:700;color:var(--primary-dark);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Next Booking</div>
+              <div style="font-weight:700;font-size:1rem;color:var(--text-dark)" id="next-booking-date">—</div>
+              <div style="font-size:.84rem;color:var(--text-medium)" id="next-booking-meta">—</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" data-panel="bookings" id="view-all-btn">View All Bookings</button>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="db-section-title">Recent Activity</div>
+        <div style="background:#fff;border:1.5px solid var(--border-light);border-radius:var(--r-lg);padding:4px 20px;box-shadow:var(--shadow-xs)">
+          <div id="activity-list">
+            <div class="db-loading"><span class="spinner"></span> Loading activity…</div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-panel="new-booking">New Booking</button>
+          <a href="babysitters.html" class="btn btn-secondary">Browse Sitters</a>
+          <button class="btn btn-ghost" data-panel="reviews">Leave a Review</button>
+        </div>
+      </div>
+
+      <!-- ── MY BOOKINGS PANEL ──────────────────────────────────────── -->
+      <div class="db-panel" id="panel-bookings">
+        <div class="dashboard-header">
+          <h2>My Bookings</h2>
+          <p>All your past and upcoming babysitting sessions.</p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap" role="tablist" aria-label="Filter bookings">
+          <button class="btn btn-primary btn-sm  booking-filter-btn active" data-filter="all"       role="tab" aria-selected="true">All</button>
+          <button class="btn btn-secondary btn-sm booking-filter-btn"       data-filter="pending"   role="tab" aria-selected="false">Pending</button>
+          <button class="btn btn-secondary btn-sm booking-filter-btn"       data-filter="confirmed" role="tab" aria-selected="false">Confirmed</button>
+          <button class="btn btn-secondary btn-sm booking-filter-btn"       data-filter="completed" role="tab" aria-selected="false">Completed</button>
+          <button class="btn btn-secondary btn-sm booking-filter-btn"       data-filter="cancelled" role="tab" aria-selected="false">Cancelled</button>
+        </div>
+
+        <div id="bookings-list">
+          <div class="db-loading"><span class="spinner"></span> Loading bookings…</div>
+        </div>
+
+        <div style="margin-top:20px">
+          <button class="btn btn-primary" data-panel="new-booking">+ New Booking</button>
+        </div>
+      </div>
+
+      <!-- ── NEW BOOKING PANEL ──────────────────────────────────────── -->
+      <div class="db-panel" id="panel-new-booking">
+        <div class="dashboard-header">
+          <h2>New Booking Request</h2>
+          <p>Fill in your details below. We'll confirm within 24 hours.</p>
+        </div>
+
+        <!-- Mini calendar for date selection -->
+        <div style="margin-bottom:28px">
+          <h3 style="font-size:1rem;margin-bottom:12px;font-weight:600">Step 1 — Pick an available date</h3>
+          <div id="db-calendar" class="calendar-container" style="max-width:580px"></div>
+        </div>
+
+        <h3 style="font-size:1rem;margin-bottom:16px;font-weight:600">Step 2 — Your details</h3>
+        <div class="form-card" style="max-width:680px;padding:28px">
+          <form id="db-booking-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="db-name">Parent / Guardian Name <span class="required">*</span></label>
+                <input class="form-input" id="db-name" type="text" placeholder="Jane Smith" required>
+                <span class="field-error">Please enter your name.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="db-email">Email Address <span class="required">*</span></label>
+                <input class="form-input" id="db-email" type="email" placeholder="jane@example.com" required>
+                <span class="field-error">Please enter a valid email.</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="db-phone">Phone Number <span class="required">*</span></label>
+                <input class="form-input" id="db-phone" type="tel" placeholder="(555) 000-0000" required>
+                <span class="field-error">Please enter a phone number.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="db-ages">Child Age(s) <span class="required">*</span></label>
+                <input class="form-input" id="db-ages" type="text" placeholder="e.g. 3, 7" required>
+                <span class="field-error">Please enter child age(s).</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="db-date">Date <span class="required">*</span></label>
+                <input class="form-input" id="db-date" type="date" required>
+                <span class="field-error">Please select a date.</span>
+                <span class="form-hint" id="db-date-hint"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="db-time">Preferred Time <span class="required">*</span></label>
+                <select class="form-select" id="db-time" required>
+                  <option value="">Select…</option>
+                  <option>Morning (8am – 12pm)</option>
+                  <option>Afternoon (12pm – 5pm)</option>
+                  <option>Evening (5pm – 9pm)</option>
+                  <option>Night (9pm – midnight)</option>
+                  <option>Overnight</option>
+                </select>
+                <span class="field-error">Please select a time.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="db-sitter">Preferred Babysitter</label>
+              <select class="form-select" id="db-sitter">
+                <option value="">No preference</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="db-notes">Special Notes</label>
+              <textarea class="form-textarea" id="db-notes" placeholder="Allergies, sleep routines, pets, gate code…" rows="3"></textarea>
+            </div>
+            <div id="db-booking-success" class="form-success" role="alert">
+              <span>&#10003;</span>
+              <div><strong>Booking submitted!</strong> We'll confirm by email within 24 hours. Your booking now appears in My Bookings.</div>
+            </div>
+            <div id="db-booking-error" class="form-error-msg" role="alert"></div>
+            <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+              <button class="btn btn-primary btn-lg" type="submit">Submit Booking Request</button>
+              <button class="btn btn-ghost" type="button" data-panel="bookings">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── REVIEWS PANEL ─────────────────────────────────────────── -->
+      <div class="db-panel" id="panel-reviews">
+        <div class="dashboard-header">
+          <h2>Leave a Review</h2>
+          <p>Share your experience to help other families in the Village Mill community.</p>
+        </div>
+        <div class="form-card" style="max-width:580px;padding:28px">
+          <form id="db-review-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="dbr-sitter">Babysitter Reviewed <span class="required">*</span></label>
+              <select class="form-select" id="dbr-sitter" required>
+                <option value="">Choose a sitter…</option>
+              </select>
+              <span class="field-error">Please select a sitter.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Rating <span class="required">*</span></label>
+              <div class="star-rating-widget" role="radiogroup" aria-label="Star rating">
+                <input type="radio" name="dbr-rating" id="dbr5" value="5"><label for="dbr5" aria-label="5 stars">&#9733;</label>
+                <input type="radio" name="dbr-rating" id="dbr4" value="4"><label for="dbr4" aria-label="4 stars">&#9733;</label>
+                <input type="radio" name="dbr-rating" id="dbr3" value="3"><label for="dbr3" aria-label="3 stars">&#9733;</label>
+                <input type="radio" name="dbr-rating" id="dbr2" value="2"><label for="dbr2" aria-label="2 stars">&#9733;</label>
+                <input type="radio" name="dbr-rating" id="dbr1" value="1"><label for="dbr1" aria-label="1 star">&#9733;</label>
+              </div>
+              <span class="field-error" id="dbr-rating-error">Please select a rating.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="dbr-text">Your Review <span class="required">*</span></label>
+              <textarea class="form-textarea" id="dbr-text" rows="5" placeholder="Tell other parents about your experience…" required></textarea>
+              <span class="field-error">Please write a review.</span>
+            </div>
+            <div id="dbr-success" class="form-success" role="alert"><span>&#10003;</span><div><strong>Review submitted!</strong> Thank you — it's now visible on the Reviews page.</div></div>
+            <div id="dbr-error"   class="form-error-msg" role="alert"></div>
+            <button class="btn btn-primary" type="submit" style="margin-top:8px">Submit Review</button>
+          </form>
+        </div>
+        <!-- Past reviews from this user -->
+        <div style="margin-top:36px">
+          <div class="db-section-title">Your Past Reviews</div>
+          <div id="user-reviews-list">
+            <div class="db-loading"><span class="spinner"></span> Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE PANEL ─────────────────────────────────────────── -->
+      <div class="db-panel" id="panel-profile">
+        <div class="dashboard-header">
+          <h2>My Profile</h2>
+          <p>Update your display name and account details.</p>
+        </div>
+
+        <div class="profile-avatar-row" id="profile-avatar-row">
+          <div class="profile-avatar-large" id="profile-avatar-large">?</div>
+          <div class="profile-avatar-info">
+            <h3 id="profile-display-name">Loading…</h3>
+            <p  id="profile-email-display">—</p>
+            <p style="font-size:.75rem;color:var(--text-light);margin-top:3px" id="profile-provider"></p>
+          </div>
+        </div>
+
+        <div class="form-card" style="max-width:520px;padding:28px">
+          <form id="profile-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="pf-name">Display Name</label>
+              <input class="form-input" id="pf-name" type="text" placeholder="Jane Smith">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pf-email">Email Address</label>
+              <input class="form-input" id="pf-email" type="email" disabled style="opacity:.6;cursor:not-allowed">
+              <span class="form-hint">Email cannot be changed here.</span>
+            </div>
+            <div id="pf-success" class="form-success" role="alert"><span>&#10003;</span><div>Profile updated successfully.</div></div>
+            <div id="pf-error"   class="form-error-msg" role="alert"></div>
+            <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+              <button class="btn btn-primary" type="submit">Save Changes</button>
+              <button class="btn btn-danger btn-sm" type="button" id="signout-btn-profile" style="margin-left:auto">Sign Out</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Danger zone -->
+        <div style="margin-top:32px;padding:20px;border:1.5px solid var(--error);border-radius:var(--r-lg);background:#FEF0EE;max-width:520px">
+          <h3 style="color:var(--error);font-size:1rem;margin-bottom:6px">Danger Zone</h3>
+          <p style="font-size:.84rem;color:var(--text-medium);margin-bottom:14px">Permanently delete your account and all associated data. This cannot be undone.</p>
+          <button class="btn btn-danger btn-sm" id="delete-account-btn">Delete My Account</button>
+          <div id="delete-confirm" style="display:none;margin-top:14px;padding:14px;background:#fff;border-radius:var(--r-md);border:1px solid var(--error)">
+            <p style="font-size:.84rem;font-weight:600;color:var(--text-dark);margin-bottom:10px">Are you sure? This will delete your bookings and account permanently.</p>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-danger btn-sm" id="delete-confirm-btn">Yes, Delete Everything</button>
+              <button class="btn btn-secondary btn-sm" id="delete-cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /dashboard-layout -->
+</div><!-- /dashboard-shell -->
+
+
+<!-- ════════════════════════════════════════════════════
+     SCRIPTS
+     ════════════════════════════════════════════════════ -->
+<script src="data/availability.js"></script>
+<script src="data/babysitters.js"></script>
+<script src="js/main.js"></script>
+<script src="js/calendar.js"></script>
+
+<script type="module">
+import {
+  onAuth, logout, submitBooking, getUserBookings, cancelBooking,
+  submitReview, getAllReviews, auth, db
+} from './js/firebase-app.js';
+
+import { updateProfile, deleteUser }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+import { collection, query, where, getDocs, orderBy }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ── State ──────────────────────────────────────────────────────────────── */
+let currentUser  = null;
+let allBookings  = [];
+let currentFilter= 'all';
+
+/* ── Helpers ────────────────────────────────────────────────────────────── */
+const $  = id => document.getElementById(id);
+const esc = s  => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function initials(name) {
+  return (name || '?').split(/\s+/).map(n=>n[0]).join('').slice(0,2).toUpperCase();
+}
+
+function fmtDate(str) {
+  if (!str) return '—';
+  return new Date(str + 'T00:00:00').toLocaleDateString('en-US',
+    { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+}
+
+function fmtTs(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-US',{ month:'short', day:'numeric', year:'numeric' });
+}
+
+function statusChip(s) {
+  const map = {
+    pending:   'status-pending',
+    confirmed: 'status-confirmed',
+    cancelled: 'status-cancelled',
+    completed: 'status-completed'
+  };
+  return `<span class="status-chip ${map[s]||'status-pending'}">${esc(s||'pending')}</span>`;
+}
+
+function setErr(el, msg) {
+  const g = el && el.closest('.form-group');
+  if (!g) return;
+  g.classList.add('has-error');
+  const fe = g.querySelector('.field-error');
+  if (fe) fe.textContent = msg;
+}
+
+/* ── Panel navigation ───────────────────────────────────────────────────── */
+function activatePanel(name) {
+  document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item[data-panel]').forEach(b => {
+    b.classList.toggle('active', b.dataset.panel === name);
+    b.setAttribute('aria-current', b.dataset.panel === name ? 'true' : 'false');
+  });
+  const panel = $(`panel-${name}`);
+  if (panel) {
+    panel.classList.add('active');
+    panel.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  // Lazy-loads
+  if (name === 'bookings')     renderBookings(currentFilter);
+  if (name === 'overview')     renderOverview();
+  if (name === 'new-booking')  initDBCalendar();
+  if (name === 'reviews')      renderUserReviews();
+  if (name === 'profile')      renderProfile();
+}
+
+// Wire all [data-panel] buttons (sidebar + quick-action buttons)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-panel]');
+  if (btn && btn.dataset.panel) activatePanel(btn.dataset.panel);
+});
+
+/* ── Sidebar mobile toggle ──────────────────────────────────────────────── */
+const sidebarToggle = $('sidebar-toggle');
+const sidebarBody   = $('sidebar-collapsible');
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    const open = sidebarBody.classList.toggle('open');
+    sidebarToggle.setAttribute('aria-expanded', String(open));
+  });
+}
+
+/* ── Auth gate ──────────────────────────────────────────────────────────── */
+onAuth(async user => {
+  if (!user) {
+    // Not logged in — redirect to login page
+    window.location.href = 'login.html?redirect=dashboard.html';
+    return;
+  }
+
+  currentUser = user;
+
+  // Show dashboard, hide gate
+  $('auth-gate').classList.add('hidden');
+  $('dashboard-shell').classList.add('visible');
+
+  // Populate user UI
+  const name = user.displayName || user.email.split('@')[0];
+  const av   = initials(name);
+
+  $('header-name').textContent   = name;
+  $('header-avatar').textContent = av;
+  $('sidebar-name').textContent  = name;
+  $('sidebar-email').textContent = user.email;
+  $('sidebar-avatar').textContent= av;
+  $('overview-greeting').textContent = `Welcome back, ${name.split(' ')[0]}!`;
+
+  // Load bookings
+  allBookings = await loadBookings(user.uid);
+  renderOverview();
+
+  // Populate sitter selects
+  if (window.BABYSITTERS_DATA) {
+    ['db-sitter','dbr-sitter'].forEach(id => {
+      const sel = $(id);
+      if (!sel) return;
+      window.BABYSITTERS_DATA.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.name; o.textContent = s.name;
+        sel.appendChild(o);
+      });
+    });
+  }
+});
+
+/* ── Load bookings from Firestore ───────────────────────────────────────── */
+async function loadBookings(uid) {
+  try {
+    return await getUserBookings(uid);
+  } catch(e) {
+    console.warn('Could not load bookings:', e);
+    return [];
+  }
+}
+
+/* ── Overview ───────────────────────────────────────────────────────────── */
+function renderOverview() {
+  const total     = allBookings.length;
+  const upcoming  = allBookings.filter(b => ['pending','confirmed'].includes(b.status)).length;
+  const completed = allBookings.filter(b => b.status === 'completed').length;
+  const cancelled = allBookings.filter(b => b.status === 'cancelled').length;
+
+  $('stat-total').textContent     = total;
+  $('stat-upcoming').textContent  = upcoming;
+  $('stat-completed').textContent = completed;
+  $('stat-cancelled').textContent = cancelled;
+
+  // Next booking
+  const next = allBookings
+    .filter(b => ['pending','confirmed'].includes(b.status) && b.date)
+    .sort((a,b) => a.date > b.date ? 1 : -1)[0];
+
+  const callout = $('next-booking-callout');
+  if (next && callout) {
+    callout.style.display = 'block';
+    $('next-booking-date').textContent = fmtDate(next.date);
+    $('next-booking-meta').textContent =
+      (next.time || '') + (next.sitter ? ' · with ' + next.sitter : '');
+  }
+
+  // Activity feed
+  const activityEl = $('activity-list');
+  if (!activityEl) return;
+  if (!allBookings.length) {
+    activityEl.innerHTML = `
+      <div class="db-empty" style="padding:28px">
+        <span class="db-empty-icon">&#128197;</span>
+        <h3>No activity yet</h3>
+        <p>Your booking history will appear here.</p>
+      </div>`;
+    return;
+  }
+  const recent = [...allBookings].slice(0, 6);
+  activityEl.innerHTML = recent.map(b => {
+    const dot = b.status === 'cancelled' ? 'cancelled' : b.status === 'completed' ? 'completed' : '';
+    return `
+      <div class="activity-item">
+        <div class="activity-dot ${dot}"></div>
+        <div>
+          <div class="activity-text"><strong>${fmtDate(b.date)}</strong> — ${esc(b.sitter || 'Any sitter')}</div>
+          <div class="activity-text">${statusChip(b.status)} ${b.time ? '· ' + esc(b.time) : ''}</div>
+          <div class="activity-time">${b.createdAt ? 'Requested ' + fmtTs(b.createdAt) : ''}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ── Bookings list ──────────────────────────────────────────────────────── */
+function renderBookings(filter) {
+  currentFilter = filter;
+
+  // Update tab styles
+  document.querySelectorAll('.booking-filter-btn').forEach(btn => {
+    const active = btn.dataset.filter === filter;
+    btn.classList.toggle('btn-primary',   active);
+    btn.classList.toggle('btn-secondary', !active);
+    btn.setAttribute('aria-selected', String(active));
+  });
+
+  const el = $('bookings-list');
+  if (!el) return;
+
+  let list = allBookings;
+  if (filter !== 'all') list = list.filter(b => b.status === filter);
+
+  if (!list.length) {
+    el.innerHTML = `
+      <div class="db-empty">
+        <span class="db-empty-icon">&#128197;</span>
+        <h3>No ${filter === 'all' ? '' : filter} bookings</h3>
+        <p>${filter === 'all' ? 'You haven\'t made any bookings yet.' : 'Nothing in this category yet.'}</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = list.map(b => `
+    <div class="booking-card" id="bc-${esc(b.id)}">
+      <div class="booking-card-header">
+        <span class="booking-card-date">${fmtDate(b.date)}</span>
+        ${statusChip(b.status)}
+      </div>
+      <div class="booking-card-meta">
+        <span>&#128100; ${esc(b.sitter || 'No preference')}</span>
+        <span>&#128336; ${esc(b.time || '—')}</span>
+        <span>&#128118; Ages: ${esc(b.childAges || b.ages || '—')}</span>
+      </div>
+      ${b.notes ? `<p style="font-size:.82rem;color:var(--text-medium);margin-bottom:12px;font-style:italic">"${esc(b.notes)}"</p>` : ''}
+      ${['pending','confirmed'].includes(b.status) ? `
+        <button class="btn btn-secondary btn-sm cancel-booking-btn"
+                data-id="${esc(b.id)}" style="color:var(--error);border-color:var(--error)">
+          Cancel Booking
+        </button>` : ''}
+    </div>`).join('');
+
+  // Cancel buttons
+  el.querySelectorAll('.cancel-booking-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Cancel this booking? This cannot be undone.')) return;
+      btn.disabled = true; btn.textContent = 'Cancelling…';
+      try {
+        await cancelBooking(btn.dataset.id);
+        // Update local state
+        const bk = allBookings.find(b => b.id === btn.dataset.id);
+        if (bk) bk.status = 'cancelled';
+        renderBookings(currentFilter);
+        renderOverview();
+      } catch(e) {
+        alert('Could not cancel: ' + e.message);
+        btn.disabled = false; btn.textContent = 'Cancel Booking';
+      }
+    });
+  });
+}
+
+// Filter tab clicks
+document.querySelectorAll('.booking-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => renderBookings(btn.dataset.filter));
+});
+
+/* ── Dashboard calendar → new booking form ──────────────────────────────── */
+let dbCalInited = false;
+function initDBCalendar() {
+  if (dbCalInited) return;
+  dbCalInited = true;
+  new AvailabilityCalendar('#db-calendar', {
+    requestPage: 'booking.html',
+    showBanner: false,
+    onSelect: dateStr => {
+      const d = $('db-date');
+      if (d) d.value = dateStr;
+      const hint = $('db-date-hint');
+      if (hint) {
+        hint.textContent = '&#10003; Selected: ' + new Date(dateStr + 'T00:00:00')
+          .toLocaleDateString('en-US',{ weekday:'long', month:'long', day:'numeric' });
+      }
+    }
+  });
+}
+
+/* ── New booking form (dashboard) ───────────────────────────────────────── */
+const dbBookingForm = $('db-booking-form');
+if (dbBookingForm) {
+  // Pre-fill name + email once user is known
+  onAuth(user => {
+    if (!user) return;
+    const nameF = $('db-name'); if (nameF && user.displayName) nameF.value = user.displayName;
+    const mailF = $('db-email'); if (mailF && user.email) mailF.value = user.email;
+  });
+
+  dbBookingForm.querySelectorAll('.form-input,.form-select,.form-textarea').forEach(el => {
+    el.addEventListener('input', () => el.closest('.form-group')?.classList.remove('has-error'));
+  });
+
+  dbBookingForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    $('db-booking-success').classList.remove('visible');
+    $('db-booking-error').classList.remove('visible');
+
+    const name  = $('db-name').value.trim();
+    const email = $('db-email').value.trim();
+    const phone = $('db-phone').value.trim();
+    const ages  = $('db-ages').value.trim();
+    const date  = $('db-date').value;
+    const time  = $('db-time').value;
+
+    let valid = true;
+    if (name.length < 2)                        { setErr($('db-name'),  'Please enter your name.');    valid=false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setErr($('db-email'),'Please enter a valid email.'); valid=false; }
+    if (phone.length < 7)                        { setErr($('db-phone'), 'Please enter a phone number.');valid=false; }
+    if (!ages)                                   { setErr($('db-ages'),  'Please enter child age(s).');  valid=false; }
+    if (!date)                                   { setErr($('db-date'),  'Please select a date.');        valid=false; }
+    if (!time)                                   { setErr($('db-time'),  'Please select a time.');        valid=false; }
+    if (!valid) return;
+
+    const submitBtn = dbBookingForm.querySelector('[type="submit"]');
+    submitBtn.disabled = true; submitBtn.textContent = 'Submitting…';
+
+    try {
+      const docRef = await submitBooking({
+        uid:       currentUser.uid,
+        parentName:name, email, phone,
+        childAges: ages, date, time,
+        sitter:    $('db-sitter').value || 'No preference',
+        notes:     $('db-notes').value.trim()
+      });
+      // Add to local state immediately
+      allBookings.unshift({
+        id: docRef.id, uid: currentUser.uid,
+        parentName:name, email, phone, childAges:ages, date, time,
+        sitter: $('db-sitter').value || 'No preference',
+        notes: $('db-notes').value.trim(),
+        status:'pending', createdAt: { toDate: ()=> new Date() }
+      });
+      dbBookingForm.reset();
+      $('db-date-hint').textContent = '';
+      $('db-booking-success').classList.add('visible');
+      renderOverview();
+    } catch(err) {
+      $('db-booking-error').textContent = 'Submission failed: ' + err.message;
+      $('db-booking-error').classList.add('visible');
+    } finally {
+      submitBtn.disabled = false; submitBtn.textContent = 'Submit Booking Request';
+    }
+  });
+}
+
+/* ── Reviews panel ──────────────────────────────────────────────────────── */
+async function renderUserReviews() {
+  const el = $('user-reviews-list');
+  if (!el || !currentUser) return;
+  try {
+    const all = await getAllReviews();
+    const mine = all.filter(r => r.uid === currentUser.uid);
+    if (!mine.length) {
+      el.innerHTML = `<div class="db-empty"><span class="db-empty-icon">&#9733;</span><h3>No reviews yet</h3><p>After a session, come back and share your experience.</p></div>`;
+      return;
+    }
+    el.innerHTML = mine.map(r => `
+      <div class="booking-card">
+        <div class="booking-card-header">
+          <span class="booking-card-date">${esc(r.babysitter)}</span>
+          <span style="color:#D4880A;font-size:1rem">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+        </div>
+        <p style="font-size:.84rem;color:var(--text-medium);margin:0">${esc(r.text)}</p>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--text-light);font-size:.84rem">Could not load reviews.</p>`;
+  }
+}
+
+const dbrForm = $('db-review-form');
+if (dbrForm) {
+  dbrForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    $('dbr-success').classList.remove('visible');
+    $('dbr-error').classList.remove('visible');
+
+    const sitter = $('dbr-sitter').value;
+    const text   = $('dbr-text').value.trim();
+    let   rating = 0;
+    dbrForm.querySelectorAll('input[name="dbr-rating"]').forEach(i => { if(i.checked) rating=+i.value; });
+
+    let valid = true;
+    if (!sitter) { $('dbr-sitter').closest('.form-group')?.classList.add('has-error'); valid=false; }
+    if (!rating) { $('dbr-rating-error').style.display='block'; valid=false; }
+    if (text.length < 10) { $('dbr-text').closest('.form-group')?.classList.add('has-error'); valid=false; }
+    if (!valid) return;
+
+    const btn = dbrForm.querySelector('[type="submit"]');
+    btn.disabled=true; btn.textContent='Submitting…';
+    try {
+      await submitReview({
+        uid: currentUser.uid,
+        reviewer: currentUser.displayName || currentUser.email,
+        babysitter: sitter, rating, text
+      });
+      dbrForm.reset();
+      $('dbr-success').classList.add('visible');
+      renderUserReviews();
+    } catch(err) {
+      $('dbr-error').textContent = 'Submission failed: ' + err.message;
+      $('dbr-error').classList.add('visible');
+    } finally {
+      btn.disabled=false; btn.textContent='Submit Review';
+    }
+  });
+}
+
+/* ── Profile panel ──────────────────────────────────────────────────────── */
+function renderProfile() {
+  if (!currentUser) return;
+  const name = currentUser.displayName || '';
+  $('profile-display-name').textContent = name || currentUser.email;
+  $('profile-email-display').textContent= currentUser.email;
+  $('profile-avatar-large').textContent = initials(name || currentUser.email);
+  $('pf-name').value  = name;
+  $('pf-email').value = currentUser.email;
+  $('profile-provider').textContent = currentUser.providerData[0]?.providerId === 'google.com'
+    ? 'Signed in with Google' : 'Signed in with Email';
+}
+
+const profileForm = $('profile-form');
+if (profileForm) {
+  profileForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    $('pf-success').classList.remove('visible');
+    $('pf-error').classList.remove('visible');
+    const newName = $('pf-name').value.trim();
+    if (!newName) return;
+    try {
+      await updateProfile(currentUser, { displayName: newName });
+      // Refresh UI
+      $('header-name').textContent = newName;
+      $('sidebar-name').textContent= newName;
+      $('overview-greeting').textContent = `Welcome back, ${newName.split(' ')[0]}!`;
+      renderProfile();
+      $('pf-success').classList.add('visible');
+    } catch(err) {
+      $('pf-error').textContent = 'Update failed: ' + err.message;
+      $('pf-error').classList.add('visible');
+    }
+  });
+}
+
+/* ── Delete account ─────────────────────────────────────────────────────── */
+$('delete-account-btn')?.addEventListener('click', () => {
+  $('delete-confirm').style.display = 'block';
+});
+$('delete-cancel-btn')?.addEventListener('click', () => {
+  $('delete-confirm').style.display = 'none';
+});
+$('delete-confirm-btn')?.addEventListener('click', async () => {
+  try {
+    await deleteUser(currentUser);
+    window.location.href = 'index.html';
+  } catch(err) {
+    alert('Could not delete account: ' + err.message + '\n\nYou may need to sign out and sign in again first.');
+  }
+});
+
+/* ── Sign out buttons ───────────────────────────────────────────────────── */
+async function doSignOut() {
+  await logout();
+  window.location.href = 'index.html';
+}
+['signout-btn-top','signout-btn-sidebar','signout-btn-profile'].forEach(id => {
+  $(id)?.addEventListener('click', doSignOut);
+});
+
+</script>
+</body>
+</html>
