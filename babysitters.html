@@ -1,93 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Babysitters | Little Stars Care</title>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Babysitters — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- ══════════════════════════════════════════════════════
-       HEADER — identical on every page
-       ══════════════════════════════════════════════════════ -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      <span>Village Mill <span class="logo-accent">Babysitting</span></span>
+    </a>
+    <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        <li><a href="index.html"       class="nav-link">Home</a></li>
+        <li><a href="booking.html"     class="nav-link">Booking</a></li>
+        <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+        <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+        <li><a href="support.html"     class="nav-link">Support</a></li>
+        <li><a href="login.html"       class="nav-link" id="nav-auth-link">Sign In</a></li>
+        <li><a href="booking.html"     class="nav-link nav-cta">Book Now</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle menu">
+      <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+    </button>
+  </div>
+</header>
 
-      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
-        <div class="logo-icon" aria-hidden="true">⭐</div>
-        <span>Little <span class="logo-accent">Stars</span> Care</span>
-      </a>
-
-      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
-        <ul class="nav-list" role="list">
-          <li><a href="index.html"       class="nav-link">Home</a></li>
-          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
-          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
-          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
-          <li><a href="support.html"     class="nav-link">Support</a></li>
-          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
-        </ul>
-      </nav>
-
-      <button class="menu-toggle" id="menu-toggle"
-              aria-expanded="false" aria-controls="main-nav"
-              aria-label="Open navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </header>
-
-<section class="page-hero">
+<div class="page-hero">
   <div class="container">
-    <h1>Meet Our Babysitters</h1>
-    <p>Experienced and trusted caregivers.</p>
+    <nav class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">/</span><span>Babysitters</span></nav>
+    <h1>Our Babysitters</h1>
+    <p>Certified, background-checked, and genuinely passionate about childcare.</p>
+  </div>
+</div>
+
+<main class="section">
+  <div class="container">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar" role="search" aria-label="Filter babysitters">
+      <div class="filter-search">
+        <span class="filter-search-icon" aria-hidden="true">&#128269;</span>
+        <input type="search" id="sitter-search" placeholder="Search by name, specialty…" aria-label="Search babysitters">
+      </div>
+      <select class="filter-select" id="sitter-availability" aria-label="Filter by availability">
+        <option value="">All Availability</option>
+        <option value="weekday">Weekdays</option>
+        <option value="weekend">Weekends</option>
+        <option value="evening">Evenings</option>
+        <option value="flexible">Flexible</option>
+        <option value="daytime">Daytime</option>
+      </select>
+      <span id="sitter-count" style="font-size:.84rem;color:var(--text-light);font-weight:500;white-space:nowrap" aria-live="polite"></span>
+    </div>
+
+    <!-- PROFILES GRID -->
+    <div style="display:grid;gap:22px" id="babysitters-grid" aria-live="polite">
+      <div class="empty-state"><span class="empty-icon">&#9679;</span><p>Loading babysitters…</p></div>
+    </div>
+
+    <!-- ADMIN NOTE -->
+    <div class="config-box" style="margin-top:40px;max-width:680px">
+      <div class="config-box-title">&#9998; Admin: Adding Babysitters</div>
+      <p>Open <code>data/babysitters.js</code> and copy one of the existing objects. Fill in the details and set <code>featured: true</code> to show the sitter on the home page. Use a photo URL or a relative path like <code>"assets/photos/name.jpg"</code>. Save and push to GitHub — changes appear on the live site immediately.</p>
+    </div>
+
+  </div>
+</main>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <div class="container" style="position:relative;z-index:1">
+    <h2>Found the Perfect Sitter?</h2>
+    <p>Book them now in under 2 minutes.</p>
+    <a href="booking.html" class="btn btn-accent btn-lg">Book a Sitter</a>
   </div>
 </section>
 
-<section class="section">
-  <div class="container grid-3">
-
-    <article class="sitter-card animate-in">
-      <img class="sitter-card-img"
-      src="https://placehold.co/400x400"
-      alt="Babysitter">
-
-      <div class="sitter-card-body">
-        <h3 class="sitter-card-name">Emma Johnson</h3>
-
-        <p class="sitter-card-desc">
-          CPR certified with 4 years of babysitting experience.
-        </p>
-
-        <a href="booking.html" class="btn btn-primary">
-          Book Emma
-        </a>
-      </div>
-    </article>
-
-    <article class="sitter-card animate-in">
-      <img class="sitter-card-img"
-      src="https://placehold.co/400x400"
-      alt="Babysitter">
-
-      <div class="sitter-card-body">
-        <h3 class="sitter-card-name">Olivia Davis</h3>
-
-        <p class="sitter-card-desc">
-          Specializes in infant and toddler care.
-        </p>
-
-        <a href="booking.html" class="btn btn-primary">
-          Book Olivia
-        </a>
-      </div>
-    </article>
-
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-logo"><div class="footer-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Village Mill Babysitting</div><p class="footer-brand-desc">Trusted babysitters for the Village Mill community.</p></div>
+      <div><h4>Navigation</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="booking.html">Book</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="support.html">Support</a></li></ul></div>
+      <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="booking.html">Book a Sitter</a></li><li><a href="login.html">My Account</a></li><li><a href="support.html#faq">FAQ</a></li></ul></div>
+      <div><h4>Contact</h4><div class="footer-contact-item"><span>&#128231;</span><a href="mailto:hello@villagemillbabysitting.com">hello@villagemillbabysitting.com</a></div></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Village Mill Babysitting.</p><nav class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></nav></div>
   </div>
-</section>
+</footer>
 
+<script src="data/babysitters.js"></script>
 <script src="js/main.js"></script>
+<script src="js/babysitters.js"></script>
+<script type="module">
+  import { onAuth } from './js/firebase-app.js';
+  onAuth(user => { const l=document.getElementById('nav-auth-link'); if(l){l.textContent=user?'My Dashboard':'Sign In';l.href=user?'dashboard.html':'login.html';} });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => initBabysittersPage());
+</script>
 </body>
 </html>
