@@ -1,75 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking | Little Stars Care</title>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Sitter — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- ══════════════════════════════════════════════════════
-       HEADER — identical on every page
-       ══════════════════════════════════════════════════════ -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      <span>Village Mill <span class="logo-accent">Babysitting</span></span>
+    </a>
+    <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        <li><a href="index.html"       class="nav-link">Home</a></li>
+        <li><a href="booking.html"     class="nav-link">Booking</a></li>
+        <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
+        <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
+        <li><a href="support.html"     class="nav-link">Support</a></li>
+        <li><a href="login.html"       class="nav-link" id="nav-auth-link">Sign In</a></li>
+        <li><a href="booking.html"     class="nav-link nav-cta">Book Now</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle menu">
+      <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+    </button>
+  </div>
+</header>
 
-      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
-        <div class="logo-icon" aria-hidden="true">⭐</div>
-        <span>Little <span class="logo-accent">Stars</span> Care</span>
-      </a>
-
-      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
-        <ul class="nav-list" role="list">
-          <li><a href="index.html"       class="nav-link">Home</a></li>
-          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
-          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
-          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
-          <li><a href="support.html"     class="nav-link">Support</a></li>
-          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
-        </ul>
-      </nav>
-
-      <button class="menu-toggle" id="menu-toggle"
-              aria-expanded="false" aria-controls="main-nav"
-              aria-label="Open navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </header>
-
-<section class="page-hero">
+<div class="page-hero">
   <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span class="breadcrumb-sep">/</span><span>Booking</span>
+    </nav>
     <h1>Book a Babysitter</h1>
-    <p>Select a date and request a sitter.</p>
+    <p>Select an available date, then complete your booking request.</p>
   </div>
-</section>
+</div>
 
-<section class="section">
+<main class="section">
   <div class="container">
 
-    <div class="calendar-wrapper">
-      <div class="calendar-header">
-        <button class="cal-nav-btn">‹</button>
-        <h2 class="cal-title">June 2026</h2>
-        <button class="cal-nav-btn">›</button>
-      </div>
+    <!-- STEP INDICATORS -->
+    <div class="steps-grid" style="margin-bottom:44px" aria-label="Booking steps">
+      <article class="step-card" style="border-color:var(--primary);background:var(--primary-xlight)" id="step-indicator-1">
+        <div class="step-num">1</div>
+        <h3 class="step-title">Choose a Date</h3>
+        <p class="step-desc">Select an available date from the calendar below.</p>
+      </article>
+      <article class="step-card" id="step-indicator-2">
+        <div class="step-num" style="background:var(--border);box-shadow:none">2</div>
+        <h3 class="step-title">Fill in Details</h3>
+        <p class="step-desc">Tell us about your family and preferred sitter.</p>
+      </article>
+      <article class="step-card" id="step-indicator-3">
+        <div class="step-num" style="background:var(--border);box-shadow:none">3</div>
+        <h3 class="step-title">Confirm &amp; Submit</h3>
+        <p class="step-desc">Review your request and submit for confirmation.</p>
+      </article>
+    </div>
 
-      <div class="calendar-grid">
-        <p style="text-align:center;">
-          Calendar functionality will be added later.
-        </p>
+    <!-- STEP 1: CALENDAR -->
+    <div id="booking-step-1">
+      <h2 style="margin-bottom:8px;font-size:1.3rem">Step 1: Choose Your Date</h2>
+      <p style="color:var(--text-medium);margin-bottom:24px;font-size:.9rem">Green dates are available. Click one to continue to your booking form.</p>
+      <div id="booking-calendar" class="calendar-container"></div>
+    </div>
+
+    <!-- STEP 2: FORM (hidden until date selected) -->
+    <div id="booking-step-2" style="display:none;margin-top:40px">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap">
+        <h2 style="font-size:1.3rem;margin:0">Step 2: Your Details</h2>
+        <div id="selected-date-tag" class="tag tag-green" style="font-size:.82rem"></div>
+        <button class="btn btn-ghost btn-sm" id="change-date-btn">Change Date</button>
+      </div>
+      <div class="form-card" style="max-width:720px">
+        <form id="booking-request-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="req-name">Parent / Guardian Name <span class="required">*</span></label>
+              <input class="form-input" id="req-name" type="text" placeholder="Jane Smith" autocomplete="name" required>
+              <span class="field-error">Please enter your full name.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="req-email">Email Address <span class="required">*</span></label>
+              <input class="form-input" id="req-email" type="email" placeholder="jane@example.com" autocomplete="email" required>
+              <span class="field-error">Please enter a valid email address.</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="req-phone">Phone Number <span class="required">*</span></label>
+              <input class="form-input" id="req-phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" required>
+              <span class="field-error">Please enter a valid phone number.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="req-ages">Child Age(s) <span class="required">*</span></label>
+              <input class="form-input" id="req-ages" type="text" placeholder="e.g. 3, 7" required>
+              <span class="field-error">Please enter your child's age(s).</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="req-date">Requested Date <span class="required">*</span></label>
+              <input class="form-input" id="req-date" type="date" required>
+              <span class="field-error">Please select a date.</span>
+              <span class="form-hint" id="req-date-hint"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="req-time">Preferred Start Time <span class="required">*</span></label>
+              <select class="form-select" id="req-time" required>
+                <option value="">Select a time…</option>
+                <option>Morning (8am – 12pm)</option>
+                <option>Afternoon (12pm – 5pm)</option>
+                <option>Evening (5pm – 9pm)</option>
+                <option>Night (9pm – midnight)</option>
+                <option>Overnight</option>
+              </select>
+              <span class="field-error">Please select a preferred time.</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="req-sitter">Preferred Babysitter</label>
+            <select class="form-select" id="req-sitter">
+              <option value="">No preference — any available sitter</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="req-instructions">Special Instructions or Notes</label>
+            <textarea class="form-textarea" id="req-instructions" placeholder="Allergies, nap routines, pets, gate code…" rows="4"></textarea>
+          </div>
+
+          <div class="config-box">
+            <div class="config-box-title">&#9888; Setup Required</div>
+            <p>To receive email notifications for bookings, replace <code>YOUR_BOOKING_FORM_ID</code> in <code>js/forms.js</code> with your free <a href="https://formspree.io" target="_blank" rel="noopener">Formspree</a> form ID. While using Firebase Auth, bookings are also saved to Firestore for logged-in users.</p>
+          </div>
+
+          <div id="booking-success" class="form-success" role="alert">
+            <span>&#10003;</span>
+            <div>
+              <strong>Booking request sent!</strong>
+              We'll confirm your date by email within 24 hours. Check your inbox — and your spam folder just in case.
+            </div>
+          </div>
+          <div id="booking-error" class="form-error-msg" role="alert"></div>
+
+          <button class="btn btn-primary btn-lg" type="submit" style="margin-top:8px;width:100%">
+            Submit Booking Request
+          </button>
+        </form>
       </div>
     </div>
 
   </div>
-</section>
+</main>
 
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><div class="footer-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>Village Mill Babysitting</div>
+        <p class="footer-brand-desc">Trusted babysitters for the Village Mill community.</p>
+      </div>
+      <div><h4>Navigation</h4><ul class="footer-links">
+        <li><a href="index.html">Home</a></li><li><a href="babysitters.html">Babysitters</a></li>
+        <li><a href="reviews.html">Reviews</a></li><li><a href="support.html">Support</a></li>
+      </ul></div>
+      <div><h4>Help</h4><ul class="footer-links">
+        <li><a href="support.html#faq">FAQ</a></li><li><a href="support.html">Contact Us</a></li>
+        <li><a href="login.html">My Account</a></li>
+      </ul></div>
+      <div><h4>Contact</h4>
+        <div class="footer-contact-item"><span>&#128231;</span><a href="mailto:hello@villagemillbabysitting.com">hello@villagemillbabysitting.com</a></div>
+        <div class="footer-contact-item"><span>&#128222;</span><a href="tel:+15550000000">(555) 000-0000</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Village Mill Babysitting. All rights reserved.</p>
+      <nav class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></nav>
+    </div>
+  </div>
+</footer>
+
+<script src="data/availability.js"></script>
+<script src="data/babysitters.js"></script>
 <script src="js/main.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/forms.js"></script>
+<script type="module">
+  import { onAuth } from './js/firebase-app.js';
+  onAuth(user => {
+    const l = document.getElementById('nav-auth-link');
+    if (l) { l.textContent = user ? 'My Dashboard' : 'Sign In'; l.href = user ? 'dashboard.html' : 'login.html'; }
+  });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Build calendar; on date select → show form
+  const cal = new AvailabilityCalendar('#booking-calendar', {
+    requestPage: 'request.html',
+    showBanner: false,
+    onSelect: function(dateStr) { showStep2(dateStr); }
+  });
+
+  function showStep2(dateStr) {
+    document.getElementById('booking-step-2').style.display = 'block';
+    document.getElementById('booking-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Mark steps
+    document.getElementById('step-indicator-1').style.borderColor = 'var(--success)';
+    document.getElementById('step-indicator-1').style.background  = '#E8F7EE';
+    document.getElementById('step-indicator-2').style.borderColor = 'var(--primary)';
+    document.getElementById('step-indicator-2').style.background  = 'var(--primary-xlight)';
+
+    // Tag + date field
+    const tag  = document.getElementById('selected-date-tag');
+    const nice = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    if (tag) tag.textContent = nice;
+    const dateInput = document.getElementById('req-date');
+    if (dateInput) { dateInput.value = dateStr; }
+
+    // Populate sitter dropdown
+    const sel = document.getElementById('req-sitter');
+    if (sel && window.BABYSITTERS_DATA && sel.options.length === 1) {
+      window.BABYSITTERS_DATA.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.name; o.textContent = s.name + ' (' + s.experience + ' yrs)';
+        sel.appendChild(o);
+      });
+    }
+  }
+
+  document.getElementById('change-date-btn').addEventListener('click', function() {
+    document.getElementById('booking-step-2').style.display = 'none';
+    document.getElementById('booking-calendar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Check URL param (coming from homepage calendar)
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('date')) showStep2(p.get('date'));
+
+  // Form submission
+  initBookingForm();
+});
+</script>
 </body>
 </html>
