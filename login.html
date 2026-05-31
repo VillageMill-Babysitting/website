@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .auth-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:var(--r-md); overflow:hidden; border:1.5px solid var(--border); }
+    .auth-tab  { flex:1; padding:10px; font-size:.875rem; font-weight:600; background:#fff; color:var(--text-medium); cursor:pointer; transition:background var(--t-base),color var(--t-base); border:none; }
+    .auth-tab.active { background:var(--primary); color:#fff; }
+    .auth-tab-panel  { display:none; }
+    .auth-tab-panel.active { display:block; }
+    .password-wrap  { position:relative; }
+    .password-toggle { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-light); font-size:.8rem; font-weight:600; padding:2px 6px; }
+    .reset-link { font-size:.8rem; color:var(--primary); font-weight:600; cursor:pointer; background:none; border:none; padding:0; }
+    .reset-link:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </div>
+      <span class="auth-logo-text">Village Mill Babysitting</span>
+    </div>
+
+    <!-- Tabs: Sign In / Create Account -->
+    <div class="auth-tabs" role="tablist" aria-label="Authentication options">
+      <button class="auth-tab active" id="tab-login"    role="tab" aria-selected="true"  aria-controls="panel-login">Sign In</button>
+      <button class="auth-tab"        id="tab-register" role="tab" aria-selected="false" aria-controls="panel-register">Create Account</button>
+    </div>
+
+    <!-- ── SIGN IN PANEL ──────────────────────────────────── -->
+    <div class="auth-tab-panel active" id="panel-login" role="tabpanel">
+      <p class="auth-sub" style="margin-bottom:18px">Sign in to view and manage your bookings.</p>
+
+      <!-- Google -->
+      <button class="google-btn" id="google-signin-btn" aria-label="Sign in with Google">
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider">or sign in with email</div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="li-email">Email Address</label>
+          <input class="form-input" id="li-email" type="email" placeholder="jane@example.com" autocomplete="email" required>
+          <span class="field-error">Please enter a valid email.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="li-password" style="display:flex;justify-content:space-between;align-items:center">
+            Password
+            <button type="button" class="reset-link" id="forgot-pw-btn">Forgot password?</button>
+          </label>
+          <div class="password-wrap">
+            <input class="form-input" id="li-password" type="password" placeholder="Your password" autocomplete="current-password" required style="padding-right:70px">
+            <button type="button" class="password-toggle" id="li-pw-toggle" aria-label="Show password">Show</button>
+          </div>
+          <span class="field-error">Please enter your password.</span>
+        </div>
+        <div id="login-error" class="form-error-msg" style="margin-bottom:12px" role="alert"></div>
+        <button class="btn btn-primary btn-block" type="submit" id="login-submit-btn">Sign In</button>
+      </form>
+
+      <!-- Reset panel (inline) -->
+      <div id="reset-panel" style="display:none;margin-top:18px;padding:16px;background:var(--primary-xlight);border-radius:var(--r-md);border:1.5px solid var(--primary-light)">
+        <p style="font-size:.84rem;font-weight:600;margin-bottom:10px">Enter your email and we'll send a reset link.</p>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" id="reset-email" type="email" placeholder="your@email.com" style="flex:1">
+          <button class="btn btn-primary btn-sm" id="send-reset-btn">Send</button>
+        </div>
+        <div id="reset-success" style="display:none;margin-top:8px;font-size:.82rem;color:var(--success);font-weight:600">Reset email sent! Check your inbox.</div>
+        <div id="reset-error"   style="display:none;margin-top:8px;font-size:.82rem;color:var(--error);font-weight:600"></div>
+      </div>
+    </div>
+
+    <!-- ── CREATE ACCOUNT PANEL ───────────────────────────── -->
+    <div class="auth-tab-panel" id="panel-register" role="tabpanel">
+      <p class="auth-sub" style="margin-bottom:18px">Create an account to track your bookings and reviews.</p>
+
+      <button class="google-btn" id="google-register-btn" aria-label="Sign up with Google">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider">or create with email</div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name</label>
+          <input class="form-input" id="reg-name" type="text" placeholder="Jane Smith" autocomplete="name" required>
+          <span class="field-error">Please enter your name.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input class="form-input" id="reg-email" type="email" placeholder="jane@example.com" autocomplete="email" required>
+          <span class="field-error">Please enter a valid email.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password</label>
+          <div class="password-wrap">
+            <input class="form-input" id="reg-password" type="password" placeholder="At least 8 characters" autocomplete="new-password" required style="padding-right:70px">
+            <button type="button" class="password-toggle" id="reg-pw-toggle" aria-label="Show password">Show</button>
+          </div>
+          <span class="field-error" id="reg-pw-error">Password must be at least 8 characters.</span>
+          <span class="form-hint">Minimum 8 characters.</span>
+        </div>
+        <div id="register-error" class="form-error-msg" style="margin-bottom:12px" role="alert"></div>
+        <button class="btn btn-primary btn-block" type="submit" id="register-submit-btn">Create Account</button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      <a href="index.html">← Back to Village Mill Babysitting</a>
+    </div>
+
+  </div><!-- /auth-card -->
+</div><!-- /auth-page -->
+
+<script src="js/main.js"></script>
+<script type="module">
+import {
+  loginEmail, registerEmail, loginGoogle, resetPassword, onAuth
+} from './js/firebase-app.js';
+
+/* ── Redirect if already logged in ──────────────────────────────────────── */
+const redirectTo = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+onAuth(user => { if (user) window.location.href = redirectTo; });
+
+/* ── Tab switching ───────────────────────────────────────────────────────── */
+document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
+document.getElementById('tab-register').addEventListener('click', () => switchTab('register'));
+
+// Support deep-link ?tab=register
+if (new URLSearchParams(window.location.search).get('tab') === 'register') {
+  switchTab('register');
+}
+
+function switchTab(tab) {
+  ['login','register'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    document.getElementById(`tab-${t}`).setAttribute('aria-selected', String(t === tab));
+    document.getElementById(`panel-${t}`).classList.toggle('active', t === tab);
+  });
+}
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+function setLoading(btn, on, label) {
+  btn.disabled = on;
+  btn.innerHTML = on
+    ? `<span class="spinner" style="width:16px;height:16px;border-width:2px;vertical-align:middle;margin-right:6px"></span> ${label}…`
+    : label;
+}
+
+function friendlyError(code) {
+  const map = {
+    'auth/user-not-found':        'No account found with that email.',
+    'auth/wrong-password':        'Incorrect password. Please try again.',
+    'auth/invalid-credential':    'Incorrect email or password.',
+    'auth/email-already-in-use':  'An account with this email already exists.',
+    'auth/weak-password':         'Password must be at least 8 characters.',
+    'auth/too-many-requests':     'Too many attempts. Please wait a few minutes.',
+    'auth/popup-closed-by-user':  'Sign-in popup was closed. Please try again.',
+    'auth/network-request-failed':'Network error — please check your connection.',
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.add('visible'); }
+function hideErr(el)      { el.classList.remove('visible'); }
+
+/* ── Password show/hide ──────────────────────────────────────────────────── */
+function bindPwToggle(inputId, toggleId) {
+  const inp = document.getElementById(inputId);
+  const btn = document.getElementById(toggleId);
+  if (!inp || !btn) return;
+  btn.addEventListener('click', () => {
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? 'Hide' : 'Show';
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  });
+}
+bindPwToggle('li-password', 'li-pw-toggle');
+bindPwToggle('reg-password', 'reg-pw-toggle');
+
+/* ── Sign In ──────────────────────────────────────────────────────────────── */
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const errEl = document.getElementById('login-error');
+  hideErr(errEl);
+
+  const email = document.getElementById('li-email').value.trim();
+  const pass  = document.getElementById('li-password').value;
+  const btn   = document.getElementById('login-submit-btn');
+
+  // Validate
+  let ok = true;
+  const emailGrp = document.getElementById('li-email').closest('.form-group');
+  const passGrp  = document.getElementById('li-password').closest('.form-group');
+  emailGrp.classList.remove('has-error'); passGrp.classList.remove('has-error');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailGrp.classList.add('has-error'); ok=false; }
+  if (!pass) { passGrp.classList.add('has-error'); ok=false; }
+  if (!ok) return;
+
+  setLoading(btn, true, 'Sign In');
+  try {
+    await loginEmail(email, pass);
+    window.location.href = redirectTo;
+  } catch(err) {
+    showErr(errEl, friendlyError(err.code));
+  } finally {
+    setLoading(btn, false, 'Sign In');
+  }
+});
+
+/* ── Register ─────────────────────────────────────────────────────────────── */
+const registerForm = document.getElementById('register-form');
+registerForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const errEl = document.getElementById('register-error');
+  hideErr(errEl);
+
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-password').value;
+  const btn   = document.getElementById('register-submit-btn');
+
+  let ok = true;
+  const nameGrp  = document.getElementById('reg-name').closest('.form-group');
+  const emailGrp = document.getElementById('reg-email').closest('.form-group');
+  const passGrp  = document.getElementById('reg-password').closest('.form-group');
+  [nameGrp,emailGrp,passGrp].forEach(g => g.classList.remove('has-error'));
+
+  if (name.length < 2)                         { nameGrp.classList.add('has-error');  ok=false; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ emailGrp.classList.add('has-error'); ok=false; }
+  if (pass.length < 8)                         { passGrp.classList.add('has-error');  ok=false; }
+  if (!ok) return;
+
+  setLoading(btn, true, 'Create Account');
+  try {
+    await registerEmail(email, pass, name);
+    window.location.href = redirectTo;
+  } catch(err) {
+    showErr(errEl, friendlyError(err.code));
+  } finally {
+    setLoading(btn, false, 'Create Account');
+  }
+});
+
+/* ── Google (both tabs) ───────────────────────────────────────────────────── */
+async function doGoogleAuth(btnId) {
+  const btn = document.getElementById(btnId);
+  setLoading(btn, true, 'Continue with Google');
+  try {
+    await loginGoogle();
+    window.location.href = redirectTo;
+  } catch(err) {
+    if (err.code !== 'auth/popup-closed-by-user') {
+      alert(friendlyError(err.code));
+    }
+  } finally {
+    setLoading(btn, false,
+      '<svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Continue with Google');
+  }
+}
+document.getElementById('google-signin-btn').addEventListener('click',   () => doGoogleAuth('google-signin-btn'));
+document.getElementById('google-register-btn').addEventListener('click', () => doGoogleAuth('google-register-btn'));
+
+/* ── Password Reset ───────────────────────────────────────────────────────── */
+document.getElementById('forgot-pw-btn').addEventListener('click', () => {
+  const panel = document.getElementById('reset-panel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  if (panel.style.display === 'block') {
+    const liEmail = document.getElementById('li-email').value;
+    if (liEmail) document.getElementById('reset-email').value = liEmail;
+    document.getElementById('reset-email').focus();
+  }
+});
+
+document.getElementById('send-reset-btn').addEventListener('click', async () => {
+  const email = document.getElementById('reset-email').value.trim();
+  const ok    = document.getElementById('reset-success');
+  const err   = document.getElementById('reset-error');
+  ok.style.display  = 'none';
+  err.style.display = 'none';
+  if (!email) { err.textContent = 'Please enter your email address.'; err.style.display='block'; return; }
+  try {
+    await resetPassword(email);
+    ok.style.display = 'block';
+  } catch(e) {
+    err.textContent  = friendlyError(e.code);
+    err.style.display= 'block';
+  }
+});
+
+</script>
+</body>
+</html>
