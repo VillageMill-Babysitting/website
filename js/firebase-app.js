@@ -104,3 +104,18 @@ export async function getAllReviews() {
 }
 
 export { auth, db, app };
+
+/* ── Firestore: Babysitters ─────────────────────────────────────────────── */
+export async function getBabysitters() {
+  const snap = await getDocs(
+    query(
+      collection(db, 'babysitters'),
+      orderBy('order', 'asc')
+    )
+  );
+
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...d.data()
+  }));
+}
