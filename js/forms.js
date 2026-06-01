@@ -1,7 +1,7 @@
 /**
- * LITTLE STARS CARE — forms.js
+ * VILLAGE MILL BABYSITTING — forms.js
  * ─────────────────────────────────────────────────────────────────────────────
- * Handles the Booking Request Form (request.html) and
+ * Handles the Booking Request Form (booking.html) and
  * the Contact / Support Form (support.html).
  *
  * HOW TO ENABLE EMAIL NOTIFICATIONS (Formspree):
@@ -71,7 +71,7 @@ function _scrollTo(el) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   BOOKING REQUEST FORM  (request.html)
+   BOOKING REQUEST FORM  (booking.html)
    ═══════════════════════════════════════════════════════════════════════════ */
 function initBookingForm() {
   const form = document.getElementById('booking-request-form');
@@ -168,7 +168,7 @@ function initBookingForm() {
         form.reset();
         if (successEl) { successEl.classList.add('visible'); _scrollTo(successEl); }
       } else {
-        const msg = 'Something went wrong. Please try again or email us directly at hello@littlestarscare.com.';
+        const msg = 'Something went wrong. Please try again or email us directly at hello@villagemillbabysitting.com.';
         if (errorEl) { errorEl.textContent = msg; errorEl.classList.add('visible'); }
       }
     } catch {
