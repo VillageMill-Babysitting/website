@@ -2,69 +2,302 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Page Not Found</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Village Mill Babysitting</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23367A4A'/><text y='.85em' x='12' font-size='72'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Subtle animated background */
+    .error-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: linear-gradient(160deg, var(--green-950) 0%, var(--green-800) 60%, var(--green-700) 100%);
+      overflow: hidden;
+    }
+    .error-bg::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+    }
+    .error-bg::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -15%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+    }
+
+    /* Card */
+    .error-card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.97);
+      border-radius: var(--r-xl);
+      padding: 56px 48px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: var(--shadow-xl);
+      text-align: center;
+    }
+
+    /* Big 404 number */
+    .error-num {
+      font-family: 'Merriweather', Georgia, serif;
+      font-size: clamp(80px, 16vw, 140px);
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--green-500) 0%, var(--green-800) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 0;
+      letter-spacing: -2px;
+    }
+
+    /* Divider line with label */
+    .error-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 16px 0 24px;
+    }
+    .error-divider::before,
+    .error-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+    .error-divider-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-xlight);
+      white-space: nowrap;
+    }
+
+    /* Heading */
+    .error-heading {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      margin-bottom: 12px;
+      color: var(--text-dark);
+    }
+
+    .error-sub {
+      font-size: .95rem;
+      color: var(--text-medium);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    /* Action buttons */
+    .error-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .error-actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Helpful links grid */
+    .error-links {
+      border-top: 1px solid var(--border-light);
+      padding-top: 24px;
+    }
+    .error-links-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-xlight);
+      margin-bottom: 14px;
+    }
+    .error-links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .error-link-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--primary-xlight);
+      border: 1.5px solid var(--primary-light);
+      border-radius: var(--r-md);
+      color: var(--primary-dark);
+      font-size: .84rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background var(--t-base), border-color var(--t-base), transform var(--t-spring);
+    }
+    .error-link-item:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-darker);
+      transform: translateY(-2px);
+    }
+    .error-link-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      opacity: .8;
+    }
+
+    /* Back button (browser history) */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .84rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color var(--t-base);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--primary); }
+
+    /* Countdown redirect */
+    .redirect-notice {
+      margin-top: 18px;
+      font-size: .78rem;
+      color: var(--text-xlight);
+    }
+    .redirect-notice span {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    @media (max-width: 480px) {
+      .error-card { padding: 36px 24px; }
+      .error-links-grid { grid-template-columns: 1fr; }
+      .error-actions .btn + .btn { margin-top: 0; }
+    }
+  </style>
 </head>
-    <!-- ══════════════════════════════════════════════════════
-       HEADER — identical on every page
-       ══════════════════════════════════════════════════════ -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
+<body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">
 
-      <a href="index.html" class="logo" aria-label="Little Stars Care — Go to home page">
-        <div class="logo-icon" aria-hidden="true">⭐</div>
-        <span>Little <span class="logo-accent">Stars</span> Care</span>
-      </a>
+  <!-- Decorative background -->
+  <div class="error-bg" aria-hidden="true"></div>
 
-      <nav class="main-nav" id="main-nav" role="navigation" aria-label="Primary navigation">
-        <ul class="nav-list" role="list">
-          <li><a href="index.html"       class="nav-link">Home</a></li>
-          <li><a href="booking.html"     class="nav-link">Book Now</a></li>
-          <li><a href="babysitters.html" class="nav-link">Babysitters</a></li>
-          <li><a href="reviews.html"     class="nav-link">Reviews</a></li>
-          <li><a href="support.html"     class="nav-link">Support</a></li>
-          <li><a href="booking.html"     class="nav-link nav-cta">📅 Book a Sitter</a></li>
-        </ul>
-      </nav>
+  <!-- Error card -->
+  <div class="error-card" role="main">
 
-      <button class="menu-toggle" id="menu-toggle"
-              aria-expanded="false" aria-controls="main-nav"
-              aria-label="Open navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </header>
-  
-<body>
-
-<section class="page-404">
-
-  <div>
-    <span class="error-404-icon">⭐</span>
-
-    <span class="error-404-num">
-      404
-    </span>
-
-    <h1>Page Not Found</h1>
-
-    <p>
-      The page you're looking for doesn't exist.
-    </p>
-
-    <br>
-
-    <a href="index.html" class="btn btn-primary">
-      Return Home
+    <!-- Logo -->
+    <a href="index.html"
+       style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;margin-bottom:28px;justify-content:center">
+      <div style="width:32px;height:32px;border-radius:var(--r-sm);background:var(--primary);display:grid;place-items:center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+        </svg>
+      </div>
+      <span style="font-family:'Merriweather',Georgia,serif;font-weight:700;font-size:.95rem;color:var(--text-dark)">
+        Village Mill Babysitting
+      </span>
     </a>
 
-  </div>
+    <!-- Big number -->
+    <span class="error-num" aria-hidden="true">404</span>
 
-</section>
+    <div class="error-divider">
+      <span class="error-divider-label">Page not found</span>
+    </div>
 
-<script src="js/main.js"></script>
+    <h1 class="error-heading">We lost this page</h1>
+
+    <p class="error-sub">
+      The page you're looking for doesn't exist, may have been moved,
+      or the link might be typed incorrectly. Let's get you back on track.
+    </p>
+
+    <!-- Primary actions -->
+    <div class="error-actions">
+      <a href="index.html" class="btn btn-primary btn-lg">Go to Home Page</a>
+      <a href="booking.html" class="btn btn-secondary">Book a Babysitter</a>
+    </div>
+
+    <!-- Quick nav links -->
+    <div class="error-links">
+      <div class="error-links-label">Or go somewhere helpful</div>
+      <div class="error-links-grid">
+        <a href="babysitters.html" class="error-link-item">
+          <span class="error-link-icon" aria-hidden="true">&#128100;</span>
+          Our Babysitters
+        </a>
+        <a href="reviews.html" class="error-link-item">
+          <span class="error-link-icon" aria-hidden="true">&#9733;</span>
+          Parent Reviews
+        </a>
+        <a href="support.html" class="error-link-item">
+          <span class="error-link-icon" aria-hidden="true">&#128172;</span>
+          Support &amp; FAQ
+        </a>
+        <a href="login.html" class="error-link-item">
+          <span class="error-link-icon" aria-hidden="true">&#128274;</span>
+          My Account
+        </a>
+      </div>
+    </div>
+
+    <!-- Back button -->
+    <button class="back-link" id="back-btn" onclick="window.history.length > 1 ? window.history.back() : window.location.href='index.html'">
+      &#8592; Go back to the previous page
+    </button>
+
+    <!-- Auto-redirect countdown -->
+    <p class="redirect-notice" id="redirect-notice">
+      Redirecting to home in <span id="countdown">15</span>s
+    </p>
+
+  </div><!-- /error-card -->
+
+  <script>
+    // Auto-redirect countdown
+    (function() {
+      let seconds = 15;
+      const el = document.getElementById('countdown');
+      const notice = document.getElementById('redirect-notice');
+
+      if (!el) return;
+
+      const tick = setInterval(function() {
+        seconds -= 1;
+        el.textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(tick);
+          window.location.href = 'index.html';
+        }
+      }, 1000);
+
+      // Cancel redirect if user interacts with the page
+      ['click', 'keydown', 'touchstart'].forEach(function(evt) {
+        document.addEventListener(evt, function() {
+          clearInterval(tick);
+          if (notice) notice.style.display = 'none';
+        }, { once: true });
+      });
+    })();
+  </script>
+
 </body>
 </html>
