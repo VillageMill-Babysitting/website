@@ -1,18 +1,18 @@
 /**
- * LITTLE STARS CARE — reviews.js
+ * VILLAGE MILL BABYSITTING — reviews.js
  * ─────────────────────────────────────────────────────────────────────────────
- * Reads window.REVIEWS_DATA (defined in data/reviews.js)
+ * Reads window.REVIEWS_DATA (data/reviews.js) as a static fallback.
+ * When window._getAllReviews is set by the Firebase module bridge on a page,
+ * it fetches live reviews from Firestore instead.
  *
  * Exposed globals:
  *   window.renderFeaturedReviews(containerId)  — home page featured cards
  *   window.initReviewsPage()                   — full reviews page
  *
- * NOTE ON PERSISTENCE:
- *   Reviews submitted via the Add Review form are stored in memory only.
- *   They will disappear on page refresh. To persist reviews permanently:
- *   - Option A: Use Firebase Firestore (free tier) — see README.md
- *   - Option B: Use Supabase (free tier)
- *   - Option C: Send via Formspree and manually add to data/reviews.js
+ * PERSISTENCE:
+ *   Reviews submitted on the Reviews page are saved to Firestore via
+ *   submitReview() (firebase-app.js) when a user is logged in.
+ *   Anonymous submissions fall back to in-memory only for the session.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 'use strict';
@@ -42,7 +42,7 @@ function _starsHtml(rating) {
   return html;
 }
 
-const AVATAR_BG = ['#3A7BD5','#2D6FCA','#1E5BAA','#3DAF78','#E86830','#F0B429','#1A4A8A'];
+const AVATAR_BG = ['#367A4A','#245233','#2E6840','#3DAF78','#C9984A','#4A9660','#1C3D29'];
 
 function _avatarColor(name) {
   let h = 0;
@@ -128,16 +128,21 @@ function initReviewsPage() {
   const urlParams  = new URLSearchParams(window.location.search);
   const urlSitter  = urlParams.get('sitter') || '';
 
-  // Populate sitter filter <select>
-  if (sitterFilter && window.BABYSITTERS_DATA) {
-    window.BABYSITTERS_DATA.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.name;
-      sitterFilter.appendChild(opt);
-    });
-    if (urlSitter) sitterFilter.value = urlSitter;
+  // Populate sitter filter <select> — use async helper if available, else static data
+  async function _populateSitterFilter() {
+    let sitters = [];
+    if (typeof window.loadBabysittersIntoSelects === 'function') {
+      await window.loadBabysittersIntoSelects(['review-sitter-filter']);
+    } else if (window.BABYSITTERS_DATA) {
+      (window.BABYSITTERS_DATA || []).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name; opt.textContent = s.name;
+        if (sitterFilter) sitterFilter.appendChild(opt);
+      });
+    }
+    if (sitterFilter && urlSitter) sitterFilter.value = urlSitter;
   }
+  _populateSitterFilter();
 
   /* ── Render grid ───────────────────────────────────────────────────────── */
   function _render(list) {
@@ -192,14 +197,17 @@ function initReviewsPage() {
   if (!addForm) return;
 
   // Populate babysitter select in the add-review form
-  const sitterSel = addForm.querySelector('#ar-babysitter');
-  if (sitterSel && window.BABYSITTERS_DATA) {
-    window.BABYSITTERS_DATA.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.name;
-      sitterSel.appendChild(opt);
-    });
+  if (typeof window.loadBabysittersIntoSelects === 'function') {
+    window.loadBabysittersIntoSelects(['ar-babysitter']);
+  } else if (window.BABYSITTERS_DATA) {
+    const sitterSel = addForm.querySelector('#ar-babysitter');
+    if (sitterSel) {
+      (window.BABYSITTERS_DATA || []).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name; opt.textContent = s.name;
+        sitterSel.appendChild(opt);
+      });
+    }
   }
 
   // Clear error highlight on input
