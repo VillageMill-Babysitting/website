@@ -272,12 +272,22 @@
 <script src="js/babysitters.js"></script>
 <script src="js/reviews.js"></script>
 <script type="module">
-  import { onAuth } from './js/firebase-app.js';
+  import { onAuth, getBabysitters } from './js/firebase-app.js';
+
+  // Makes Firestore babysitters available to js/babysitters.js
+  window._getBabysitters = getBabysitters;
+
   onAuth(user => {
     const link = document.getElementById('nav-auth-link');
     if (!link) return;
-    if (user) { link.textContent = 'My Dashboard'; link.href = 'dashboard.html'; }
-    else       { link.textContent = 'Sign In';      link.href = 'login.html'; }
+
+    if (user) {
+      link.textContent = 'My Dashboard';
+      link.href = 'dashboard.html';
+    } else {
+      link.textContent = 'Sign In';
+      link.href = 'login.html';
+    }
   });
 </script>
 <script>
