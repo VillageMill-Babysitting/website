@@ -68,7 +68,9 @@
     <!-- ADMIN NOTE -->
     <div class="config-box" style="margin-top:40px;max-width:680px">
       <div class="config-box-title">&#9998; Admin: Adding Babysitters</div>
-      <p>Open <code>data/babysitters.js</code> and copy one of the existing objects. Fill in the details and set <code>featured: true</code> to show the sitter on the home page. Use a photo URL or a relative path like <code>"assets/photos/name.jpg"</code>. Save and push to GitHub — changes appear on the live site immediately.</p>
+      <p>
+  Babysitter profiles are managed through Firebase Firestore. Open the Firestore Database, edit the document in the <code>babysitters</code> collection, and refresh the site. Changes appear immediately without pushing new code.
+</p>
     </div>
 
   </div>
@@ -99,8 +101,19 @@
 <script src="js/main.js"></script>
 <script src="js/babysitters.js"></script>
 <script type="module">
-  import { onAuth } from './js/firebase-app.js';
-  onAuth(user => { const l=document.getElementById('nav-auth-link'); if(l){l.textContent=user?'My Dashboard':'Sign In';l.href=user?'dashboard.html':'login.html';} });
+  import { onAuth, getBabysitters } from './js/firebase-app.js';
+
+  // Firestore bridge
+  window._getBabysitters = getBabysitters;
+
+  onAuth(user => {
+    const l = document.getElementById('nav-auth-link');
+
+    if (l) {
+      l.textContent = user ? 'My Dashboard' : 'Sign In';
+      l.href = user ? 'dashboard.html' : 'login.html';
+    }
+  });
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', () => initBabysittersPage());
