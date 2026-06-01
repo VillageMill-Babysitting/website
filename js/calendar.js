@@ -1,12 +1,12 @@
 /**
- * LITTLE STARS CARE — calendar.js
+ * VILLAGE MILL BABYSITTING — calendar.js
  * ─────────────────────────────────────────────────────────────────────────────
  * Reusable interactive availability calendar.
  * Reads window.AVAILABILITY_DATA (defined in data/availability.js)
  *
  * Usage:
  *   new AvailabilityCalendar('#container-id', {
- *     requestPage : 'request.html', // page to link to for booking
+ *     requestPage : 'booking.html', // page to link to for booking
  *     showBanner  : true,           // show selected-date banner
  *     onSelect    : (dateStr) => {} // optional callback
  *   });
@@ -27,7 +27,7 @@ class AvailabilityCalendar {
     }
 
     this.opts = Object.assign({
-      requestPage : 'request.html',
+      requestPage : 'booking.html',
       showBanner  : true,
       onSelect    : null
     }, options || {});
